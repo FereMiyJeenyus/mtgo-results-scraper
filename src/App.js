@@ -42,7 +42,7 @@ class App extends Component {
         });
       })
       const markup = scrapedData.map(data => {
-        return `* [${data.name.replace(/[_]/, '\\_')}](${data.url}): **[archetype]**`
+        return `* [${data.name.replace(/[_]/g, '\\_')}](${data.url}): **[archetype]**`
       })
       this.setState(state => ({
         wotcUrl: '',
