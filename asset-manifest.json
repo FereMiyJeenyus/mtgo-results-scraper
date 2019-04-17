@@ -1,13 +1,13 @@
 {
   "main.css": "/mtgo-results-scraper/static/css/main.dd8225ea.chunk.css",
-  "main.js": "/mtgo-results-scraper/static/js/main.bc734f66.chunk.js",
-  "main.js.map": "/mtgo-results-scraper/static/js/main.bc734f66.chunk.js.map",
+  "main.js": "/mtgo-results-scraper/static/js/main.30b0ae6f.chunk.js",
+  "main.js.map": "/mtgo-results-scraper/static/js/main.30b0ae6f.chunk.js.map",
   "runtime~main.js": "/mtgo-results-scraper/static/js/runtime~main.7ba72ccb.js",
   "runtime~main.js.map": "/mtgo-results-scraper/static/js/runtime~main.7ba72ccb.js.map",
   "static/js/2.77c27da2.chunk.js": "/mtgo-results-scraper/static/js/2.77c27da2.chunk.js",
   "static/js/2.77c27da2.chunk.js.map": "/mtgo-results-scraper/static/js/2.77c27da2.chunk.js.map",
   "index.html": "/mtgo-results-scraper/index.html",
-  "precache-manifest.daa926887470e91c4242cdb1ff11aa70.js": "/mtgo-results-scraper/precache-manifest.daa926887470e91c4242cdb1ff11aa70.js",
+  "precache-manifest.e33257b1d174a77cde309270f5251c7f.js": "/mtgo-results-scraper/precache-manifest.e33257b1d174a77cde309270f5251c7f.js",
   "service-worker.js": "/mtgo-results-scraper/service-worker.js",
   "static/css/main.dd8225ea.chunk.css.map": "/mtgo-results-scraper/static/css/main.dd8225ea.chunk.css.map"
 }
