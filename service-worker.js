@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/mtgo-results-scraper/precache-manifest.e33257b1d174a77cde309270f5251c7f.js"
+  "/mtgo-results-scraper/precache-manifest.ddeacc97fab6e129dba99a0f0c32e6a7.js"
 );
 
 workbox.clientsClaim();
