@@ -4,10 +4,13 @@ import * as rp from "request-promise";
 import * as cheerio from 'cheerio';
 import Remarkable from 'remarkable';
 
+const credits = "^(Direct link formatting thanks to /u/FereMiyJeenyus and [their web scraper](https://old.reddit.com/r/magicTCG/comments/brbhfg/i_made_a_useful_tool_for_anyone_who_posts_mtgo/)! If you encounter any dead or broken links, or have any questions/praise, please reach out to them!)"
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      scrapeResults: '',
       wotcUrl: ''
     };
     this.handleChange = this.handleChange.bind(this);
@@ -20,39 +23,46 @@ class App extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const options = {
-      uri: `https://cors-anywhere.herokuapp.com/${this.state.wotcUrl}`,
-      transform: function (body) {
-        return cheerio.load(body);
-      }
-    };
-    const regex = /[\d\)]/g;
+    if (this.state.wotcUrl.startsWith("https://magic.wizards.com"))
+    {
+      const options = {
+        uri: `https://cors-anywhere.herokuapp.com/${this.state.wotcUrl}`,
+        transform: function (body) {
+          return cheerio.load(body);
+        }
+      };
+      const regex = /[^A-Za-z _-]/g;
+      const spaces = / /g;
 
-    rp(options)
-    .then(($) => {
-      const scrapedData = [];
-      const {wotcUrl} = this.state;
-      $('h4').each(function(i, elem) {
-        const parts = $(this).text().split(' (');
-        const username = parts[0];
-        const chaff = parts[1].replace(' ', '_').replace(regex, '').toLowerCase();
-        scrapedData.push({ 
-          name: username, 
-          url: `${wotcUrl}#${username.replace(' ', '_').replace(regex, '').toLowerCase()}_${chaff}`
-        });
+      rp(options)
+      .then(($) => {
+        const scrapedData = [];
+        const {wotcUrl} = this.state;
+        $('h4').each(function(i, elem) {
+          const parts = $(this).text().split(' (');
+          const username = parts[0];
+          let chaff = ''
+          if (parts[1]){
+            chaff = parts[1].replace(regex, '').replace(spaces, '_').toLowerCase();
+          }
+          scrapedData.push({ 
+            name: username, 
+            url: `${wotcUrl}#${username.replace(regex, '').replace(spaces, '_').toLowerCase()}${chaff ? '_' + chaff : ''}`
+          });
+        })
+        const markup = scrapedData.map(data => {
+          return `* [archetype](${data.url}): **${data.name.replace(/[_]/g, '\\_')}**`
+        })
+        this.setState(state => ({
+          wotcUrl: '',
+          scrapeResults: markup.join("\r\n"),
+          scrapeTest: markup[0]
+        }));
       })
-      const markup = scrapedData.map(data => {
-        return `* [${data.name.replace(/[_]/g, '\\_')}](${data.url}): **[archetype]**`
-      })
-      this.setState(state => ({
-        wotcUrl: '',
-        scrapeResults: markup.join("\r\n"),
-        scrapeTest: markup[0]
-      }));
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+      .catch((err) => {
+        console.log(err);
+      });
+    }
   }
 
   getRawMarkup() {
@@ -78,7 +88,7 @@ class App extends Component {
               Scrape
             </button>
           </form>
-          <textarea readOnly style={{ width: 1400, height: 600 }} value={this.state.scrapeResults} />
+          <textarea readOnly style={{ width: 1400, height: 600 }} value={`${this.state.scrapeResults}\r\n\r\n${credits}`} />
           <div
           className="content"
           dangerouslySetInnerHTML={this.getRawMarkup()}
