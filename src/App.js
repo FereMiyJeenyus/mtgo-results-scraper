@@ -27,6 +27,7 @@ class App extends Component {
     {
       const options = {
         uri: `https://cors-anywhere.herokuapp.com/${this.state.wotcUrl}`,
+        headers: { 'Origin': 'https://feremiyjeenyus.github.io/mtgo-results-scraper/' }
         transform: function (body) {
           return cheerio.load(body);
         }
