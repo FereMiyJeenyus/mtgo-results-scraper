@@ -4,19 +4,19 @@ self.__precacheManifest = [
     "url": "/mtgo-results-scraper/static/js/runtime~main.7ba72ccb.js"
   },
   {
-    "revision": "4734f042c6a30fd9ff4e",
-    "url": "/mtgo-results-scraper/static/js/main.3b2f6c02.chunk.js"
+    "revision": "3ef8311b7695baf5a9f1",
+    "url": "/mtgo-results-scraper/static/js/main.8ff69c88.chunk.js"
   },
   {
     "revision": "87e3bdd72ca35e8ef806",
     "url": "/mtgo-results-scraper/static/js/2.8ba3bbc7.chunk.js"
   },
   {
-    "revision": "4734f042c6a30fd9ff4e",
+    "revision": "3ef8311b7695baf5a9f1",
     "url": "/mtgo-results-scraper/static/css/main.21eac5c5.chunk.css"
   },
   {
-    "revision": "f11817b4c381d18b0d65dc6459b374a6",
+    "revision": "213f697c1e0a210bf14c0c671c537b50",
     "url": "/mtgo-results-scraper/index.html"
   }
 ];
