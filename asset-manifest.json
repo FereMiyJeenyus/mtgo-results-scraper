@@ -1,13 +1,26 @@
 {
-  "main.css": "/mtgo-results-scraper/static/css/main.21eac5c5.chunk.css",
-  "main.js": "/mtgo-results-scraper/static/js/main.8ff69c88.chunk.js",
-  "main.js.map": "/mtgo-results-scraper/static/js/main.8ff69c88.chunk.js.map",
-  "runtime~main.js": "/mtgo-results-scraper/static/js/runtime~main.7ba72ccb.js",
-  "runtime~main.js.map": "/mtgo-results-scraper/static/js/runtime~main.7ba72ccb.js.map",
-  "static/js/2.8ba3bbc7.chunk.js": "/mtgo-results-scraper/static/js/2.8ba3bbc7.chunk.js",
-  "static/js/2.8ba3bbc7.chunk.js.map": "/mtgo-results-scraper/static/js/2.8ba3bbc7.chunk.js.map",
-  "index.html": "/mtgo-results-scraper/index.html",
-  "precache-manifest.edeb57453cd64627fa34a9b4d48dd614.js": "/mtgo-results-scraper/precache-manifest.edeb57453cd64627fa34a9b4d48dd614.js",
-  "service-worker.js": "/mtgo-results-scraper/service-worker.js",
-  "static/css/main.21eac5c5.chunk.css.map": "/mtgo-results-scraper/static/css/main.21eac5c5.chunk.css.map"
+  "files": {
+    "main.css": "/mtgo-results-scraper/static/css/main.56d00fae.chunk.css",
+    "main.js": "/mtgo-results-scraper/static/js/main.82497713.chunk.js",
+    "main.js.map": "/mtgo-results-scraper/static/js/main.82497713.chunk.js.map",
+    "runtime-main.js": "/mtgo-results-scraper/static/js/runtime-main.eb9bf42a.js",
+    "runtime-main.js.map": "/mtgo-results-scraper/static/js/runtime-main.eb9bf42a.js.map",
+    "static/css/2.fc648eaa.chunk.css": "/mtgo-results-scraper/static/css/2.fc648eaa.chunk.css",
+    "static/js/2.c30f452b.chunk.js": "/mtgo-results-scraper/static/js/2.c30f452b.chunk.js",
+    "static/js/2.c30f452b.chunk.js.map": "/mtgo-results-scraper/static/js/2.c30f452b.chunk.js.map",
+    "index.html": "/mtgo-results-scraper/index.html",
+    "precache-manifest.763cca41f631e676164c6c6412efa1c7.js": "/mtgo-results-scraper/precache-manifest.763cca41f631e676164c6c6412efa1c7.js",
+    "service-worker.js": "/mtgo-results-scraper/service-worker.js",
+    "static/css/2.fc648eaa.chunk.css.map": "/mtgo-results-scraper/static/css/2.fc648eaa.chunk.css.map",
+    "static/css/main.56d00fae.chunk.css.map": "/mtgo-results-scraper/static/css/main.56d00fae.chunk.css.map",
+    "static/js/2.c30f452b.chunk.js.LICENSE.txt": "/mtgo-results-scraper/static/js/2.c30f452b.chunk.js.LICENSE.txt",
+    "static/media/semantic.min.css": "/mtgo-results-scraper/static/media/outline-icons.ef60a4f6.woff"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.eb9bf42a.js",
+    "static/css/2.fc648eaa.chunk.css",
+    "static/js/2.c30f452b.chunk.js",
+    "static/css/main.56d00fae.chunk.css",
+    "static/js/main.82497713.chunk.js"
+  ]
 }
