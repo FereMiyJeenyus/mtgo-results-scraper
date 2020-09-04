@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState, useEffect } from 'react';
 import "semantic-ui-css/semantic.min.css"
-import { Header, Grid, Input, Button, List, Container } from 'semantic-ui-react'
+import { Header, Grid, Input, Button, List, Container, Icon } from 'semantic-ui-react'
 import './App.css';
 import { Result, Card } from './types'
 import { Doughnut } from 'react-chartjs-2'
@@ -128,6 +128,7 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
     }
 
     const side: { [key: string]: JSX.Element[] } = {
+        "Companion": [],
         "Planeswalkers": [],
         "Creatures": [],
         "Instants": [],
@@ -144,7 +145,13 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
             side.Unknown.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
         }
         else if (card.info.types.includes("Creature")) {
-            side.Creatures.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
+            if (card.info.text.includes("Companion —")) {
+                console.log(`Companion: ${card.name}`)
+                side.Companion.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />)
+            }
+            else {
+                side.Creatures.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
+            }
         }
         else if (card.info.types.includes("Land")) {
             side.Lands.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
@@ -222,7 +229,11 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
                                     }
                                     return (
                                         <List.List key={key}>
-                                            <List.Header content={key} />
+                                            <List.Header>
+                                                {key === "Companion" && <Icon name="paw" />}
+                                                {key}
+                                                {key === "Companion" && <Icon name="paw" />}
+                                            </List.Header>
                                             {side[key]}
                                         </List.List>)
                                 }

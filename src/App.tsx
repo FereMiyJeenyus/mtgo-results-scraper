@@ -109,7 +109,7 @@ const App: React.FC = () => {
     const mu = markup
     mu[index] = generateMarkupLine(displayedDeck)
     setMarkup(mu)
-    if (index + 2 < results.length) {
+    if (index + 1 < results.length) {
       setDisplayedDeck(results[index + 1])
       setDisplayedDeckIndex(index + 1);
     }
@@ -144,7 +144,7 @@ const App: React.FC = () => {
   const panes = [
     {
       menuItem: 'Markdown', pane:
-        <Tab.Pane>
+        <Tab.Pane key='Markdown'>
           <Form>
             <Form.TextArea value={markup?.join("\r\n")} style={{ height: 500 }} />
           </Form>
@@ -152,7 +152,7 @@ const App: React.FC = () => {
     },
     {
       menuItem: 'Card Counts', pane:
-        <Tab.Pane>
+        <Tab.Pane key='Counts'>
           <Form>
             <Form.TextArea value={cardCounts?.join("\r\n")} style={{ height: 500 }} />
           </Form>
@@ -162,7 +162,7 @@ const App: React.FC = () => {
 
   return (
     <Container className="App">
-      <Header>Scraper</Header>
+      <Header>MTGO Results Scraper</Header>
       <Grid columns={16}>
         <Grid.Row>
           <Grid.Column width={3} textAlign="left">
@@ -170,6 +170,7 @@ const App: React.FC = () => {
             <a
               href='https://magic.wizards.com/en/content/deck-lists-magic-online-products-game-info'
               target='_blank'
+              rel="noopener noreferrer"
               style={{ marginLeft: '1em' }}>
               MTGO Results
             </a>
@@ -203,7 +204,12 @@ const App: React.FC = () => {
           {displayedDeck &&
             <DeckList result={displayedDeck} goToNextDeck={goToNextDeck} goToPreviousDeck={goToPreviousDeck} setDisplayedDeck={setDisplayedDeck} />
           }
-          <Progress value={displayedDeckIndex} total={results.length} progress='ratio' style={{ marginTop: '1em', marginBottom: 0 }} />
+          <Progress
+            value={displayedDeckIndex ? displayedDeckIndex + 1 : ""}
+            total={results ? results.length : 0}
+            progress='ratio'
+            style={{ marginTop: '1em', marginBottom: 0 }}
+          />
         </Modal.Content>
       </Modal>
     </Container>

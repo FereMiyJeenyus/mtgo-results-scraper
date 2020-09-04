@@ -4,13 +4,15 @@
   "private": true,
   "homepage": "https://feremiyjeenyus.github.com.io/mtgo-results-scraper",
   "dependencies": {
+    "@saeris/react-mana": "^1.0.3",
     "chart.js": "^2.9.3",
     "cheerio": "^1.0.0-rc.3",
     "gh-pages": "^2.2.0",
+    "mana-font": "1.9.0",
     "react": "^16.13.0",
     "react-chartjs-2": "^2.9.0",
     "react-dom": "^16.13.0",
-    "react-scripts": "3.4.0",
+    "react-scripts": "^3.4.3",
     "request-promise": "^4.2.5",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.2"
