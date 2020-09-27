@@ -39,7 +39,7 @@ const CardItem: React.FC<CardItemProps> = (props: CardItemProps) => {
         if (manaCost) {
             const manaCostArray = manaCost.slice(1, manaCost.length - 1).split("}{");
             manaCostArray.forEach((pip, index) => {
-                costIcons.push(<List.Item key={index} style={{ marginLeft: 2 }} content={<Mana symbol={pip.replace('/', '').toLowerCase()} shadow />} />)
+                costIcons.push(<List.Item key={index} style={{ marginLeft: 2, paddingTop: 0 }} content={<Mana symbol={pip.replace('/', '').toLowerCase()} shadow />} />)
             });
         }
     }
@@ -49,18 +49,21 @@ const CardItem: React.FC<CardItemProps> = (props: CardItemProps) => {
             <Popup trigger={<p>{card.count} {card.name}</p>}>
                 <Popup.Content>
                     {card.info &&
-                        <SemanticCard
-                            header={<Header>{card.name}<List horizontal items={costIcons} style={{ float: 'right' }} /></Header>}
-                            meta={card.info.type}
-                            description={card.info.text}
-                            color={cardColor}
-                        />
-                        // <SemanticCard
-                        //     header={<><Header>{card.name}</Header><List style={{ float: 'right' }} items={costIcons} /></>}
-                        //     meta={card.info.type}
-                        //     description={card.info.text}
-                        //     color={cardColor}
-                        // />
+                        <>
+                            <SemanticCard
+                                header={<Header>{card.name}<List horizontal items={costIcons} style={{ float: 'right' }} /></Header>}
+                                meta={card.info.type}
+                                description={card.info.text}
+                                color={cardColor}
+                            />
+                            {card.info.otherHalf &&
+                                <SemanticCard
+                                    header={<Header>{card.info.otherHalf.faceName}</Header>}
+                                    meta={card.info.otherHalf.type}
+                                    description={card.info.otherHalf.text}
+                                    color={cardColor}
+                                />}
+                        </>
                     }
                 </Popup.Content>
             </Popup>

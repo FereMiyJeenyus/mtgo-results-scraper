@@ -146,7 +146,6 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
         }
         else if (card.info.types.includes("Creature")) {
             if (card.info.text.includes("Companion —")) {
-                console.log(`Companion: ${card.name}`)
                 side.Companion.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />)
             }
             else {

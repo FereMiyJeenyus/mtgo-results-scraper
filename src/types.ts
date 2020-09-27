@@ -20,10 +20,19 @@ export interface Result {
 
 export interface CardInfo {
     colors: Color[];
+    faceName: string;
     type: string;
     types: CardType[];
     manaCost: string;
     text: string;
+    otherHalf: {
+        colors: Color[];
+        faceName: string;
+        type: string;
+        types: CardType[];
+        manaCost: string;
+        text: string;
+    }
 }
 
 export type Color = "W" | "U" | "B" | "R" | "G"
