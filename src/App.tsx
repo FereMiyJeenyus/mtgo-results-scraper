@@ -6,11 +6,13 @@ import { getDecksFromUrl } from './scraper'
 import { Result, Card } from './types'
 import DeckList from './DeckList'
 
+const thx = `Direct links courtesy of /u/FereMiyJeenyus and their [MTGO Results Scraper](https://feremiyjeenyus.github.io/mtgo-results-scraper/)`;
+
 const App: React.FC = () => {
   const [hasScraped, setHasScraped] = useState<boolean>(false)
   const [wotcUrl, setWotcUrl] = useState<string>("");
   const [results, setResults] = useState<Result[]>([]);
-  const [markup, setMarkup] = useState<string[]>([]);
+  const [resultsMarkup, setResultsMarkup] = useState<string[]>([]);
   const [cardCounts, setCardCounts] = useState<string[]>([]);
   const [displayedDeck, setDisplayedDeck] = useState<Result>();
   const [displayedDeckIndex, setDisplayedDeckIndex] = useState<number>();
@@ -28,8 +30,7 @@ const App: React.FC = () => {
     const { deck, archetype, pilot, duplicatePilot, url } = result
 
     const muUrl = `[${archetype || 'archetype'}](${url})`
-    const muPilot = `**${pilot.replace(/[_]/g, "\\_")}${
-      duplicatePilot ? " (duplicate pilot, link points to other list)" : ""}**`
+    const muPilot = `**${pilot.replace(/[_]/g, "\\_")}${duplicatePilot ? " (duplicate pilot, link points to other list)" : ""}**`
 
     const highlights = [...deck.maindeck.filter(c => c.highlighted), ...deck.sideboard.filter(c => c.highlighted)].map(c => c.name)
     const muHighlights = `(${Array.from(new Set(highlights)).join(", ")})`
@@ -42,7 +43,7 @@ const App: React.FC = () => {
       const muString = generateMarkupLine(result)
       mu.push(muString)
     }
-    setMarkup(mu);
+    setResultsMarkup(mu);
   }
 
   const generateCardCounts = (results: Result[]) => {
@@ -106,9 +107,9 @@ const App: React.FC = () => {
     res[index] = displayedDeck;
     setResults(res);
 
-    const mu = markup
+    const mu = resultsMarkup
     mu[index] = generateMarkupLine(displayedDeck)
-    setMarkup(mu)
+    setResultsMarkup(mu)
     if (index + 1 < results.length) {
       setDisplayedDeck(results[index + 1])
       setDisplayedDeckIndex(index + 1);
@@ -128,9 +129,9 @@ const App: React.FC = () => {
     res[index] = displayedDeck;
     setResults(res);
 
-    const mu = [...markup]
+    const mu = [...resultsMarkup]
     mu[index] = generateMarkupLine(displayedDeck)
-    setMarkup(mu)
+    setResultsMarkup(mu)
 
     if (index !== 0) {
       setDisplayedDeck(results[index - 1])
@@ -146,7 +147,15 @@ const App: React.FC = () => {
       menuItem: 'Markdown', pane:
         <Tab.Pane key='Markdown'>
           <Form>
-            <Form.TextArea value={markup?.join("\r\n")} style={{ height: 500 }} />
+            <Form.TextArea value={
+              [
+                `Full Results: ${wotcUrl || ""}`,
+                "",
+                ...resultsMarkup,
+                "",
+                thx
+              ].join("\r\n")
+            } style={{ height: 500 }} />
           </Form>
         </Tab.Pane>
     },

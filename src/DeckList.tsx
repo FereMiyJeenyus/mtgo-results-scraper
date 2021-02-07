@@ -141,11 +141,14 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
 
 
     for (const card of result.deck.sideboard) {
+        if (card.info && (!card.info.types || !card.info.text)) {
+            console.log(card);
+        }
         if (!card.info) {
             side.Unknown.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
         }
         else if (card.info.types.includes("Creature")) {
-            if (card.info.text.includes("Companion —")) {
+            if (card.info.text && card.info.text.includes("Companion —")) {
                 side.Companion.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />)
             }
             else {
