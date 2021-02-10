@@ -10,11 +10,12 @@ export const getDecksFromUrl = async (wotcUrl: string): Promise<Result[]> => {
     const results: Result[] = [];
     if (wotcUrl.startsWith("https://magic.wizards.com")) {
         const options = {
-            uri: `https://cors-anywhere.herokuapp.com/${wotcUrl}`,
+            uri: `http://www.whateverorigin.org/get?url=${wotcUrl}`,
             headers: { 'Origin': 'https://feremiyjeenyus.github.io/mtgo-results-scraper/' },
             transform: function (body: string) {
                 return cheerio.load(body);
-            }
+            },
+            mode: "no-cors"
         };
         await rp(options)
             .then($ => {
