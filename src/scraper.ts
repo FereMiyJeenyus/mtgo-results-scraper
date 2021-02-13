@@ -10,7 +10,7 @@ export const getDecksFromUrl = async (wotcUrl: string): Promise<Result[]> => {
     const results: Result[] = [];
     if (wotcUrl.startsWith("https://magic.wizards.com")) {
         const options = {
-            uri: `http://www.whateverorigin.org/get?url=${wotcUrl}`,
+            uri: `http://localhost:8080/${wotcUrl}`,
             headers: { 'Origin': 'https://feremiyjeenyus.github.io/mtgo-results-scraper/' },
             transform: function (body: string) {
                 return cheerio.load(body);

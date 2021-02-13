@@ -185,7 +185,7 @@ const App: React.FC = () => {
             </a>
           </Grid.Column>
           <Grid.Column width={2} textAlign="left">
-            <Button disabled onClick={scrape} content="Scrape" />
+            <Button onClick={scrape} content="Scrape" />
           </Grid.Column>
           <Grid.Column width={2} textAlign="left">
             <Button onClick={() => (setModalOpen(true))} content="Walkthrough" />
