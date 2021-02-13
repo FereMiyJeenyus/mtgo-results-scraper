@@ -194,9 +194,6 @@ const App: React.FC = () => {
 
         <Grid.Row>
           <Grid.Column width={16}>
-            <Message negative>
-              <p>Bad news, everyone! The scraper is currently non-functional, since the easy workaround for scraping websites with a clientside script is no longer working. I'm going to attempt to fix it over the weekend, but if you're reading this message, that hasn't happened yet.</p>
-            </Message>
             {scrapeError &&
               <Message negative>
                 <p>There was an error while attempting to scrape results. Please try again later</p>
