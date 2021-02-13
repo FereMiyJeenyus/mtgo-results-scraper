@@ -14,8 +14,7 @@ export const getDecksFromUrl = async (wotcUrl: string): Promise<Result[]> => {
             headers: { 'Origin': 'https://feremiyjeenyus.github.io/mtgo-results-scraper/' },
             transform: function (body: string) {
                 return cheerio.load(body);
-            },
-            mode: "no-cors"
+            }
         };
         await rp(options)
             .then($ => {
