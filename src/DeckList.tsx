@@ -28,7 +28,6 @@ const typeLabels = [
     'Land'
 ]
 
-
 const colorColors = [
     '#fff8d6',
     '#367ae0',

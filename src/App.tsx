@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import "semantic-ui-css/semantic.min.css"
-import { Header, Container, Grid, Input, Button, Form, Modal, Message, Progress, Tab } from 'semantic-ui-react'
+import { Header, Container, Grid, Input, Button, Form, Modal, Message, Progress, Tab, List, ListItem } from 'semantic-ui-react'
 import './App.css';
 import { getDecksFromUrl } from './scraper'
 import { Result, Card } from './types'
@@ -16,8 +16,10 @@ const App: React.FC = () => {
   const [cardCounts, setCardCounts] = useState<string[]>([]);
   const [displayedDeck, setDisplayedDeck] = useState<Result>();
   const [displayedDeckIndex, setDisplayedDeckIndex] = useState<number>();
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [deckModalOpen, setDeckModalOpen] = useState<boolean>(false);
+  const [tutorialModalOpen, setTutorialModalOpen] = useState<boolean>(false);
   const [scrapeError, setScrapeError] = useState<boolean>(false);
+  const [isNumberedResults, setIsNumberedResults] = useState<boolean>(false);
 
   useEffect(() => {
     if (results && !hasScraped) {
@@ -26,6 +28,14 @@ const App: React.FC = () => {
     }
   }, [results, hasScraped]);
 
+  useEffect(() => {
+    if (wotcUrl && (wotcUrl.includes("champ") || wotcUrl.includes("challenge"))) {
+      setIsNumberedResults(true)
+    }
+  }, [wotcUrl]);
+
+
+
   const generateMarkupLine = (result: Result): string => {
     const { deck, archetype, pilot, duplicatePilot, url } = result
 
@@ -33,8 +43,8 @@ const App: React.FC = () => {
     const muPilot = `**${pilot.replace(/[_]/g, "\\_")}${duplicatePilot ? " (duplicate pilot, link points to other list)" : ""}**`
 
     const highlights = [...deck.maindeck.filter(c => c.highlighted), ...deck.sideboard.filter(c => c.highlighted)].map(c => c.name)
-    const muHighlights = `(${Array.from(new Set(highlights)).join(", ")})`
-    return `* ${muUrl}: ${muPilot} ${highlights.length ? muHighlights : ""}`
+    const muHighlights = `(${Array.from(new Set(highlights.map(c => `[[${c}]]`))).join(", ")})`
+    return `${isNumberedResults ? '1.' : '*'} ${muUrl}: ${muPilot} ${highlights.length ? muHighlights : ""}`
   }
 
   const generateMarkup = (results: Result[]) => {
@@ -87,6 +97,7 @@ const App: React.FC = () => {
 
   const scrape = async () => {
     try {
+      if (!wotcUrl) return;
       const scrapedResults = await getDecksFromUrl(wotcUrl);
       generateMarkup(scrapedResults);
       generateCardCounts(scrapedResults);
@@ -115,7 +126,7 @@ const App: React.FC = () => {
       setDisplayedDeckIndex(index + 1);
     }
     else {
-      setModalOpen(false);
+      setDeckModalOpen(false);
     }
   }
 
@@ -138,7 +149,7 @@ const App: React.FC = () => {
       setDisplayedDeckIndex(index - 1);
     }
     else {
-      setModalOpen(false);
+      setDeckModalOpen(false);
     }
   }
 
@@ -184,11 +195,12 @@ const App: React.FC = () => {
               MTGO Results
             </a>
           </Grid.Column>
-          <Grid.Column width={2} textAlign="left">
-            <Button onClick={scrape} content="Scrape" />
-          </Grid.Column>
-          <Grid.Column width={2} textAlign="left">
-            <Button onClick={() => (setModalOpen(true))} content="Walkthrough" />
+          <Grid.Column width={13} textAlign="left">
+            <List horizontal>
+              <List.Item><Button onClick={scrape} content="Scrape" /></List.Item>
+              <List.Item><Button onClick={() => (setDeckModalOpen(true))} content="Decks" disabled={!hasScraped} /></List.Item>
+              <List.Item><Button onClick={() => (setTutorialModalOpen(true))} content="What's this?" /></List.Item>
+            </List>
           </Grid.Column>
         </Grid.Row>
 
@@ -204,9 +216,9 @@ const App: React.FC = () => {
         </Grid.Row>
       </Grid>
       <Modal
-        open={modalOpen && !!displayedDeck}
+        open={deckModalOpen && !!displayedDeck}
         centered={false}
-        onClose={() => setModalOpen(false)}
+        onClose={() => setDeckModalOpen(false)}
         closeOnDimmerClick={false}
         closeIcon>
         <Modal.Content>
@@ -219,6 +231,35 @@ const App: React.FC = () => {
             progress='ratio'
             style={{ marginTop: '1em', marginBottom: 0 }}
           />
+        </Modal.Content>
+      </Modal>
+      <Modal
+        open={tutorialModalOpen}
+        centered={false}
+        onClose={() => setTutorialModalOpen(false)}
+        closeOnDimmerClick={true}
+        closeIcon>
+        <Modal.Content>
+          <List>
+            <List.Item>
+              <List.Header>What am I looking at?</List.Header>
+              <Container style={{ padding: "0.5em 1.25em 0.25em" }}>This is a web tool for scraping Wizards of the Coast's MTGO results posts and formatting the contents for a Reddit post (or  else that supports Markdown)</Container>
+            </List.Item>
+            <List.Item>
+              <List.Header>How do I use it?</List.Header>
+              <Container style={{ paddingLeft: "1em" }}>
+                <List ordered>
+                  <ListItem>Paste the url for a WotC deck dump in the little box and click 'Scrape.'</ListItem>
+                  <ListItem>Click 'Decks' to view the decklists. From there, you can name them and click cards to highlight them.</ListItem>
+                  <ListItem>Copy the resulting text into your Reddit post. Be sure you're in 'Markdown Mode' or your links will get ugly.</ListItem>
+                </List>
+              </Container>
+            </List.Item>
+            <List.Item>
+              <List.Header>How can I report a bug or suggest a feature?</List.Header>
+              <Container style={{ padding: "0.5em 1.25em " }}>Message me on Reddit: <a href="https://reddit.com/message/compose/?to=FereMiyJeenyus">/u/FereMiyJeenyus</a></Container>
+            </List.Item>
+          </List>
         </Modal.Content>
       </Modal>
     </Container>
