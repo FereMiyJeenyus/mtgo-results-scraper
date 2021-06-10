@@ -8,9 +8,9 @@ import CardItem from './CardItem'
 
 interface DeckListProps {
     result: Result;
-    goToNextDeck();
-    goToPreviousDeck();
-    setDisplayedDeck(Result: Result);
+    goToNextDeck(): void;
+    goToPreviousDeck(): void;
+    setDisplayedDeck(Result: Result): void;
 }
 
 const colorLabels = [
@@ -88,7 +88,7 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
         setTypeCount([creatures, noncreatures, lands])
     }, [result]);
 
-    const main: { [key: string]: JSX.Element[] } = {
+    const main: { [key: string]: React.ReactElement[] } = {
         "Planeswalkers": [],
         "Creatures": [],
         "Instants": [],
@@ -126,7 +126,7 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
         }
     }
 
-    const side: { [key: string]: JSX.Element[] } = {
+    const side: { [key: string]: React.ReactElement[] } = {
         "Companion": [],
         "Planeswalkers": [],
         "Creatures": [],
@@ -179,7 +179,7 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
         setDisplayedDeck({ ...result, archetype: value })
     }
 
-    const handleKeyPress = (e: any, data: any) => {
+    const handleKeyPress = (e: any) => {
         if (e.key === 'Enter') {
             goToNextDeck();
         }

@@ -112,7 +112,7 @@ const App: React.FC = () => {
     if (!displayedDeck) {
       return
     }
-    const index = displayedDeckIndex!
+    const index = displayedDeckIndex || 0;
 
     const res = [...results]
     res[index] = displayedDeck;
@@ -134,7 +134,7 @@ const App: React.FC = () => {
     if (!displayedDeck) {
       return
     }
-    const index = displayedDeckIndex!
+    const index = displayedDeckIndex || 0;
 
     const res = [...results]
     res[index] = displayedDeck;

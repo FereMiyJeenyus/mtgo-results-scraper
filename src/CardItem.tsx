@@ -6,7 +6,7 @@ import { Mana } from "@saeris/react-mana"
 
 interface CardItemProps {
     card: Card;
-    toggleCardHighlight(Card: Card);
+    toggleCardHighlight(Card: Card): void;
 }
 
 const colorMap: { [key: string]: "blue" | "black" | "red" | "green" | "yellow" | "brown" | undefined } = {
@@ -22,7 +22,7 @@ const colorMap: { [key: string]: "blue" | "black" | "red" | "green" | "yellow" |
 const CardItem: React.FC<CardItemProps> = (props: CardItemProps) => {
     const { card, toggleCardHighlight } = props
     let cardColor: "blue" | "black" | "red" | "green" | "yellow" | "brown" | undefined;
-    const costIcons: JSX.Element[] = []
+    const costIcons: React.ReactElement[] = []
     if (card.info) {
         const { colors, manaCost } = card.info
         switch (colors.length) {

@@ -6,24 +6,24 @@
   "dependencies": {
     "@saeris/react-mana": "^1.0.3",
     "chart.js": "^2.9.4",
-    "cheerio": "^1.0.0-rc.5",
+    "cheerio": "^1.0.0-rc.10",
     "gh-pages": "^2.2.0",
     "mana-font": "1.9.0",
+    "node-fetch": "^2.6.1",
     "react": "^16.14.0",
-    "react-chartjs-2": "^2.11.1",
+    "react-chartjs-2": "^2.11.2",
     "react-dom": "^16.14.0",
-    "react-scripts": "^3.4.4",
-    "request-promise": "^4.2.6",
+    "react-scripts": "^4.0.3",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.2"
   },
   "devDependencies": {
-    "@types/chart.js": "^2.9.30",
-    "@types/cheerio": "^0.22.24",
-    "@types/node": "^12.20.0",
-    "@types/react": "^16.14.4",
-    "@types/react-dom": "^16.9.11",
-    "@types/request-promise": "^4.1.47",
+    "@types/chart.js": "^2.9.32",
+    "@types/cheerio": "^0.22.29",
+    "@types/node": "^12.20.15",
+    "@types/node-fetch": "^2.5.10",
+    "@types/react": "^16.14.8",
+    "@types/react-dom": "^16.9.13",
     "typescript": "^3.9.9"
   },
   "scripts": {
@@ -35,7 +35,7 @@
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "eslint:recommended"
   },
   "browserslist": {
     "production": [
