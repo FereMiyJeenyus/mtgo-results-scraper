@@ -1,75 +1,53 @@
-import React, { ChangeEvent, useState, useEffect } from 'react';
-import "semantic-ui-css/semantic.min.css"
-import { Header, Grid, Input, Button, List, Container, Icon } from 'semantic-ui-react'
-import './App.css';
-import { Result, Card } from './types'
-import { Doughnut } from 'react-chartjs-2'
-import CardItem from './CardItem'
+import React, { ChangeEvent, useState, useEffect } from "react";
+import "semantic-ui-css/semantic.min.css";
+import { Header, Grid, Input, Button, List, Container, Icon } from "semantic-ui-react";
+import "./App.css";
+import { Doughnut } from "react-chartjs-2";
+import { Result, Card } from "./types";
+import CardItem from "./CardItem";
 
 interface DeckListProps {
     result: Result;
+    resultCount: number;
     goToNextDeck(): void;
     goToPreviousDeck(): void;
     setDisplayedDeck(Result: Result): void;
 }
 
-const colorLabels = [
-    'White',
-    'Blue',
-    'Black',
-    'Red',
-    'Green',
-    'Colorless'
-]
+const colorLabels = ["White", "Blue", "Black", "Red", "Green", "Colorless"];
 
-const typeLabels = [
-    'Creature',
-    'Noncreature',
-    'Land'
-]
+const typeLabels = ["Creature", "Noncreature", "Land"];
 
-const colorColors = [
-    '#fff8d6',
-    '#367ae0',
-    '#404040',
-    '#db2e2e',
-    '#187d2a',
-    '#cfcfcf'
-]
+const colorColors = ["#fff8d6", "#367ae0", "#404040", "#db2e2e", "#187d2a", "#cfcfcf"];
 
-const typeColors = [
-    '#8ba349',
-    '#c48dc2',
-    '#ffb114'
-]
-
+const typeColors = ["#8ba349", "#c48dc2", "#ffb114"];
 
 const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
-    const { result, goToNextDeck, goToPreviousDeck, setDisplayedDeck } = props;
+    const { result, resultCount, goToNextDeck, goToPreviousDeck, setDisplayedDeck } = props;
     const [colorCount, setColorCount] = useState<number[]>([]);
     const [typeCount, setTypeCount] = useState<number[]>([]);
 
     const toggleCardHighlight = (card: Card) => {
-        const { deck } = result
-        for (const c of deck.maindeck) {
+        const { deck } = result;
+        result.deck.maindeck.forEach((c) => {
             if (c.name === card.name) {
                 c.highlighted = !c.highlighted;
             }
-        }
-        for (const c of deck.sideboard) {
+        });
+        result.deck.sideboard.forEach((c) => {
             if (c.name === card.name) {
                 c.highlighted = !c.highlighted;
             }
-        }
-        setDisplayedDeck({ ...result, deck })
-    }
+        });
+        setDisplayedDeck({ ...result, deck });
+    };
 
     useEffect(() => {
         if (!result) return;
         let [wCount, uCount, bCount, rCount, gCount, cCount] = [0, 0, 0, 0, 0, 0];
         let [creatures, noncreatures, lands] = [0, 0, 0];
 
-        for (const card of result.deck.maindeck) {
+        result.deck.maindeck.forEach((card) => {
             if (card.info) {
                 const { colors, types } = card.info;
                 if (colors.includes("W")) wCount += card.count;
@@ -83,113 +61,105 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
                 else if (types.includes("Land")) lands += card.count;
                 else noncreatures += card.count;
             }
-        }
-        setColorCount([wCount, uCount, bCount, rCount, gCount, cCount])
-        setTypeCount([creatures, noncreatures, lands])
+        });
+        setColorCount([wCount, uCount, bCount, rCount, gCount, cCount]);
+        setTypeCount([creatures, noncreatures, lands]);
     }, [result]);
 
     const main: { [key: string]: React.ReactElement[] } = {
-        "Planeswalkers": [],
-        "Creatures": [],
-        "Instants": [],
-        "Sorceries": [],
-        "Artifacts": [],
-        "Enchantments": [],
-        "Lands": [],
-        "Unknown": []
-    }
+        Planeswalkers: [],
+        Creatures: [],
+        Instants: [],
+        Sorceries: [],
+        Artifacts: [],
+        Enchantments: [],
+        Lands: [],
+        Unknown: []
+    };
 
-    for (const card of result.deck.maindeck) {
+    result.deck.maindeck.forEach((card) => {
         if (!card.info) {
             main.Unknown.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
-        }
-        else if (card.info.types.includes("Creature")) {
+        } else if (card.info.types.includes("Creature")) {
             main.Creatures.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
-        }
-        else if (card.info.types.includes("Land")) {
+        } else if (card.info.types.includes("Land")) {
             main.Lands.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
-        }
-        else if (card.info.types.includes("Instant")) {
+        } else if (card.info.types.includes("Instant")) {
             main.Instants.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
-        }
-        else if (card.info.types.includes("Sorcery")) {
+        } else if (card.info.types.includes("Sorcery")) {
             main.Sorceries.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
-        }
-        else if (card.info.types.includes("Artifact") && !card.info.types.includes("Creature")) {
+        } else if (card.info.types.includes("Artifact") && !card.info.types.includes("Creature")) {
             main.Artifacts.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
-        }
-        else if (card.info.types.includes("Enchantment") && !card.info.types.includes("Creature")) {
+        } else if (card.info.types.includes("Enchantment") && !card.info.types.includes("Creature")) {
             main.Enchantments.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
-        }
-        else if (card.info.types.includes("Planeswalker")) {
+        } else if (card.info.types.includes("Planeswalker")) {
             main.Planeswalkers.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
         }
-    }
+    });
 
     const side: { [key: string]: React.ReactElement[] } = {
-        "Companion": [],
-        "Planeswalkers": [],
-        "Creatures": [],
-        "Instants": [],
-        "Sorceries": [],
-        "Artifacts": [],
-        "Enchantments": [],
-        "Lands": [],
-        "Unknown": []
-    }
+        Companion: [],
+        Planeswalkers: [],
+        Creatures: [],
+        Instants: [],
+        Sorceries: [],
+        Artifacts: [],
+        Enchantments: [],
+        Lands: [],
+        Unknown: []
+    };
 
-
-    for (const card of result.deck.sideboard) {
-        if (card.info && (!card.info.types || !card.info.text)) {
-            console.log(card);
-        }
+    result.deck.sideboard.forEach((card) => {
         if (!card.info) {
             side.Unknown.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
-        }
-        else if (card.info.types.includes("Creature")) {
+        } else if (card.info.types.includes("Creature")) {
             if (card.info.text && card.info.text.includes("Companion —")) {
-                side.Companion.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />)
-            }
-            else {
+                side.Companion.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
+            } else {
                 side.Creatures.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
             }
-        }
-        else if (card.info.types.includes("Land")) {
+        } else if (card.info.types.includes("Land")) {
             side.Lands.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
-        }
-        else if (card.info.types.includes("Instant")) {
+        } else if (card.info.types.includes("Instant")) {
             side.Instants.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
-        }
-        else if (card.info.types.includes("Sorcery")) {
+        } else if (card.info.types.includes("Sorcery")) {
             side.Sorceries.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
-        }
-        else if (card.info.types.includes("Artifact") && !card.info.types.includes("Creature")) {
+        } else if (card.info.types.includes("Artifact") && !card.info.types.includes("Creature")) {
             side.Artifacts.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
-        }
-        else if (card.info.types.includes("Enchantment") && !card.info.types.includes("Creature")) {
+        } else if (card.info.types.includes("Enchantment") && !card.info.types.includes("Creature")) {
             side.Enchantments.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
-        }
-        else if (card.info.types.includes("Planeswalker")) {
+        } else if (card.info.types.includes("Planeswalker")) {
             side.Planeswalkers.push(<CardItem card={card} toggleCardHighlight={toggleCardHighlight} />);
         }
-    }
+    });
 
     const handleSetArchetype = (e: ChangeEvent, data: any) => {
-        const { value } = data
-        setDisplayedDeck({ ...result, archetype: value })
-    }
+        const { value } = data;
+        setDisplayedDeck({ ...result, archetype: value });
+    };
 
     const handleKeyPress = (e: any) => {
-        if (e.key === 'Enter') {
+        if (e.key === "Enter") {
             goToNextDeck();
         }
-    }
+    };
 
     return (
-        <Grid width={16} >
-            <Grid.Row>
-                <Grid.Column width={12}>
-                    <Input label="Archetype" value={result.archetype} onChange={handleSetArchetype} onKeyPress={handleKeyPress} />
+        <Grid width={16}>
+            <Grid.Row className="decklist-header">
+                <Grid.Column width={4}>
+                    <h3 style={{ marginBottom: "0.25em" }}>{result.pilot}</h3>
+                    <span>
+                        Deck {result.index + 1} of {resultCount}
+                    </span>
+                </Grid.Column>
+                <Grid.Column width={8}>
+                    <Input
+                        label="Archetype"
+                        value={result.archetype}
+                        onChange={handleSetArchetype}
+                        onKeyPress={handleKeyPress}
+                    />
                 </Grid.Column>
                 <Grid.Column width={2}>
                     <Button onClick={goToPreviousDeck} content="Previous" />
@@ -204,18 +174,17 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
                     <Header content="Maindeck" style={{ marginBottom: 0 }} />
                     <List style={{ marginTop: 0 }}>
                         <List.Item>
-                            {Object.keys(main).map(
-                                (key) => {
-                                    if (!main[key].length) {
-                                        return <></>;
-                                    }
-                                    return (
-                                        <List.List key={key}>
-                                            <List.Header content={key} />
-                                            {main[key]}
-                                        </List.List>)
+                            {Object.keys(main).map((key) => {
+                                if (!main[key].length) {
+                                    return <></>;
                                 }
-                            )}
+                                return (
+                                    <List.List key={key}>
+                                        <List.Header content={key} />
+                                        {main[key]}
+                                    </List.List>
+                                );
+                            })}
                         </List.Item>
                     </List>
                 </Grid.Column>
@@ -223,30 +192,43 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
                     <Header content="Sideboard" style={{ marginBottom: 0 }} />
                     <List style={{ marginTop: 0 }}>
                         <List.Item>
-                            {Object.keys(side).map(
-                                (key) => {
-                                    if (!side[key].length) {
-                                        return <></>;
-                                    }
-                                    return (
-                                        <List.List key={key}>
-                                            <List.Header>
-                                                {key === "Companion" && <Icon name="paw" />}
-                                                {key}
-                                                {key === "Companion" && <Icon name="paw" />}
-                                            </List.Header>
-                                            {side[key]}
-                                        </List.List>)
+                            {Object.keys(side).map((key) => {
+                                if (!side[key].length) {
+                                    return <></>;
                                 }
-                            )}
+                                return (
+                                    <List.List key={key}>
+                                        <List.Header>
+                                            {key === "Companion" && <Icon name="paw" />}
+                                            {key}
+                                            {key === "Companion" && <Icon name="paw" />}
+                                        </List.Header>
+                                        {side[key]}
+                                    </List.List>
+                                );
+                            })}
                         </List.Item>
                     </List>
                 </Grid.Column>
                 <Grid.Column width={6}>
                     <Container style={{ marginBottom: "10px" }}>
                         <Doughnut
-                            data={{ labels: colorLabels, datasets: [{ backgroundColor: colorColors, data: colorCount }] }}
-                            options={{ title: { display: true, text: "Color Distribution" }, legend: { display: false } }}
+                            data={{
+                                labels: colorLabels,
+                                datasets: [
+                                    {
+                                        backgroundColor: colorColors,
+                                        data: colorCount
+                                    }
+                                ]
+                            }}
+                            options={{
+                                title: {
+                                    display: true,
+                                    text: "Color Distribution"
+                                },
+                                legend: { display: false }
+                            }}
                         />
                     </Container>
                     <Container>
@@ -254,17 +236,32 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
                             data={{
                                 labels: typeLabels,
                                 datasets: [
-                                    { backgroundColor: typeColors, data: typeCount, label: "1" },
-                                    { backgroundColor: typeColors.slice(0, 2), data: typeCount.slice(0, 2), label: "2" }
+                                    {
+                                        backgroundColor: typeColors,
+                                        data: typeCount,
+                                        label: "1"
+                                    },
+                                    {
+                                        backgroundColor: typeColors.slice(0, 2),
+                                        data: typeCount.slice(0, 2),
+                                        label: "2"
+                                    }
                                 ]
                             }}
-                            options={{ title: { display: true, text: "Type Distribution" }, legend: { display: true, position: "bottom" }, cutoutPercentage: 30 }}
+                            options={{
+                                title: {
+                                    display: true,
+                                    text: "Type Distribution"
+                                },
+                                legend: { display: true, position: "bottom" },
+                                cutoutPercentage: 30
+                            }}
                         />
                     </Container>
                 </Grid.Column>
             </Grid.Row>
-        </Grid >
+        </Grid>
     );
-}
+};
 
 export default DeckList;

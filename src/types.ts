@@ -16,6 +16,7 @@ export interface Result {
     deck: Deck;
     duplicatePilot: boolean;
     archetype: string;
+    index: number;
 }
 
 export interface CardInfo {
@@ -25,6 +26,8 @@ export interface CardInfo {
     types: CardType[];
     manaCost: string;
     text: string;
+    power: string;
+    toughness: string;
     otherHalf: {
         colors: Color[];
         faceName: string;
@@ -32,8 +35,10 @@ export interface CardInfo {
         types: CardType[];
         manaCost: string;
         text: string;
-    }
+        power: string;
+        toughness: string;
+    };
 }
 
-export type Color = "W" | "U" | "B" | "R" | "G"
-export type CardType = "Creature" | "Land" | "Instant" | "Sorcery" | "Artifact" | "Enchantment" | "Planeswalker"
+export type Color = "W" | "U" | "B" | "R" | "G";
+export type CardType = "Creature" | "Land" | "Instant" | "Sorcery" | "Artifact" | "Enchantment" | "Planeswalker";
