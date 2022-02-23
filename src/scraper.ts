@@ -25,9 +25,7 @@ export const getDecksFromUrl = async (wotcUrl: string): Promise<Result[]> => {
                 if (parts[1]) {
                     chaff = parts[1].replace(regex, "").replace(spaces, "_").toLowerCase();
                 }
-                const url = `${wotcUrl}#${name.replace(regex, "").replace(spaces, "_").toLowerCase()}${
-                    chaff ? "_" + chaff : ""
-                }`;
+                const url = `${wotcUrl}#${name.replace(regex, "").replace(spaces, "_").toLowerCase()}${chaff ? "_" + chaff : ""}`;
 
                 const deck: Deck = {
                     maindeck: [],
@@ -67,6 +65,8 @@ export const getDecksFromUrl = async (wotcUrl: string): Promise<Result[]> => {
                     deck: deck,
                     duplicatePilot,
                     archetype: "",
+                    favorite: false,
+                    spicy: false,
                     index
                 });
             });

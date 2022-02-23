@@ -55,27 +55,21 @@ const CardItem: React.FC<CardItemProps> = (props: CardItemProps) => {
             const manaCostArray = manaCost.slice(1, manaCost.length - 1).split("}{");
             manaCostArray.forEach((pip, index) => {
                 costIcons.push(
-                    <List.Item
-                        key={index}
-                        style={{ marginLeft: 2, paddingTop: 0 }}
-                        content={<Mana symbol={pip.replace("/", "").toLowerCase()} shadow />}
-                    />
+                    <List.Item key={index} style={{ marginLeft: 2, paddingTop: 0 }} content={<Mana symbol={pip.replace("/", "").toLowerCase()} shadow />} />
                 );
             });
         }
     }
 
     return (
-        <List.Item
-            key={card.name}
-            onClick={() => toggleCardHighlight(card)}
-            className={card.highlighted ? "highlight" : ""}>
+        <List.Item key={card.name} onClick={() => toggleCardHighlight(card)} className={card.highlighted ? "highlight" : ""}>
             <Popup
                 trigger={
                     <p>
                         {card.count} {card.name}
                     </p>
-                }>
+                }
+            >
                 <Popup.Content>
                     {card.info && (
                         <>
@@ -83,9 +77,7 @@ const CardItem: React.FC<CardItemProps> = (props: CardItemProps) => {
                                 <SemanticCard.Content>
                                     <SemanticCard.Header>{card.name}</SemanticCard.Header>
                                     <SemanticCard.Meta>{card.info.type}</SemanticCard.Meta>
-                                    <SemanticCard.Description style={{ whiteSpace: "pre-line" }}>
-                                        {card.info.text}
-                                    </SemanticCard.Description>
+                                    <SemanticCard.Description style={{ whiteSpace: "pre-line" }}>{card.info.text}</SemanticCard.Description>
                                 </SemanticCard.Content>
                                 {(card.info.power || card.info.toughness) && (
                                     <SemanticCard.Content extra style={{ padding: ".25em 1em" }}>
@@ -93,7 +85,8 @@ const CardItem: React.FC<CardItemProps> = (props: CardItemProps) => {
                                             style={{
                                                 float: "right",
                                                 fontWeight: "bold"
-                                            }}>
+                                            }}
+                                        >
                                             {card.info.power}/{card.info.toughness}
                                         </div>
                                     </SemanticCard.Content>
@@ -104,9 +97,7 @@ const CardItem: React.FC<CardItemProps> = (props: CardItemProps) => {
                                     <SemanticCard.Content>
                                         <SemanticCard.Header>{card.info.otherHalf.faceName}</SemanticCard.Header>
                                         <SemanticCard.Meta>{card.info.otherHalf.type}</SemanticCard.Meta>
-                                        <SemanticCard.Description style={{ whiteSpace: "pre-line" }}>
-                                            {card.info.otherHalf.text}
-                                        </SemanticCard.Description>
+                                        <SemanticCard.Description style={{ whiteSpace: "pre-line" }}>{card.info.otherHalf.text}</SemanticCard.Description>
                                     </SemanticCard.Content>
                                     {(card.info.otherHalf.power || card.info.otherHalf.toughness) && (
                                         <SemanticCard.Content extra style={{ padding: ".25em 1em" }}>
@@ -114,7 +105,8 @@ const CardItem: React.FC<CardItemProps> = (props: CardItemProps) => {
                                                 style={{
                                                     float: "right",
                                                     fontWeight: "bold"
-                                                }}>
+                                                }}
+                                            >
                                                 {card.info.power}/{card.info.toughness}
                                             </div>
                                         </SemanticCard.Content>
