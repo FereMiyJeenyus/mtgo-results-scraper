@@ -101,7 +101,7 @@ const App: React.FC = () => {
     // text generation
     const generatePlaintext = (results: Result[]) => {
         const resultLines = results.map(
-            (r) => `${r.archetype ? `${r.archetype} | ` : ""}${r.pilot}: ${r.url}${r.duplicatePilot ? " (duplicate pilot, link points to other list)" : ""}`
+            (r) => `${r.archetype ? `${r.archetype} | ` : ""}${r.pilot}: <${r.url}>${r.duplicatePilot ? " (duplicate pilot, link points to other list)" : ""}`
         );
 
         const [path] = wotcUrl.split("/").slice(-1);
@@ -187,6 +187,19 @@ const App: React.FC = () => {
 
     const previewText = textFormat === "markdown" ? generateMarkdown(filteredResults) : generatePlaintext(filteredResults);
 
+    const decksByCard: string = filteredCardCounts
+        .filter((c) => !["Plains", "Island", "Swamp", "Mountain", "Forest"].includes(c.card.name))
+        .map((c) => {
+            const cardName = `* [[${c.card.name}]]`;
+            const urls = resultList
+                .filter((r) => deckHasCard(r.deck, [c.card.name]))
+                .map((r) => {
+                    return `[${r.archetype || "archetype"}](${r.url})`;
+                });
+            return `${cardName} ${[...urls].join(", ")}`;
+        })
+        .join("\r\n");
+
     const panes = [
         {
             menuItem: "Preview",
@@ -215,6 +228,16 @@ const App: React.FC = () => {
                                 .join("\r\n")}
                             style={{ height: 500 }}
                         />
+                    </Form>
+                </Tab.Pane>
+            )
+        },
+        {
+            menuItem: "Decks by Card",
+            pane: (
+                <Tab.Pane key="ByCard">
+                    <Form>
+                        <Form.TextArea style={{ height: 500 }} value={decksByCard} />
                     </Form>
                 </Tab.Pane>
             )
