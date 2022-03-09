@@ -194,7 +194,7 @@ const App: React.FC = () => {
             const urls = resultList
                 .filter((r) => deckHasCard(r.deck, [c.card.name]))
                 .map((r) => {
-                    return `[${r.archetype || "archetype"}](${r.url})`;
+                    return `**[${r.archetype || "archetype"}](${r.url})**`;
                 });
             return `${cardName} ${[...urls].join(", ")}`;
         })
