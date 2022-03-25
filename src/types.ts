@@ -1,5 +1,5 @@
 export interface Deck {
-    maindeck: Card[];
+    main: Card[];
     sideboard: Card[];
 }
 
@@ -68,3 +68,15 @@ export const setList = [
     { code: "MH1", name: "Modern Horizons" },
     { code: "WAR", name: "War of the Spark" }
 ];
+
+export interface ArchetypeClassification {
+    name: string;
+    rules: Rule[];
+}
+
+export interface Rule {
+    cardName: string;
+    in: "main" | "side" | "both";
+    atLeast?: number;
+    atMost?: number;
+}

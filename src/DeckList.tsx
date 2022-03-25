@@ -29,7 +29,7 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
         let [wCount, uCount, bCount, rCount, gCount, cCount] = [0, 0, 0, 0, 0, 0];
         let [creatures, noncreatures, lands] = [0, 0, 0];
 
-        result.deck.maindeck.forEach((card) => {
+        result.deck.main.forEach((card) => {
             if (card.info) {
                 const { colors, types } = card.info;
                 if (colors.includes("W")) wCount += card.count;
@@ -50,7 +50,7 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
 
     const toggleCardHighlight = (card: Card) => {
         const { deck } = result;
-        deck.maindeck.forEach((c) => {
+        deck.main.forEach((c) => {
             if (c.name === card.name) {
                 c.highlighted = !c.highlighted;
             }
@@ -82,7 +82,7 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
         Unknown: []
     };
 
-    result.deck.maindeck.forEach((card) => {
+    result.deck.main.forEach((card) => {
         if (!card.info) {
             main.Unknown.push(<CardItem key={card.name} card={card} toggleCardHighlight={toggleCardHighlight} />);
         } else if (card.info.types.includes("Creature")) {
@@ -154,7 +154,7 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column width={4}>
-                    <Header content="Maindeck" style={{ marginBottom: 0 }} />
+                    <Header content="Main" style={{ marginBottom: 0 }} />
                     <List style={{ marginTop: 0 }}>
                         <List.Item>
                             {Object.keys(main)

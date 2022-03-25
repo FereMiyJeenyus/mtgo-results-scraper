@@ -1,9 +1,9 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import "semantic-ui-css/semantic.min.css";
 import { Header, Container, Grid, Input, Button, Form, Message, Tab, List, DropdownItemProps, Accordion, Icon } from "semantic-ui-react";
 import "./App.css";
 import { getDecksFromUrl } from "./scraper";
-import { Result, Deck, setList, CardCount } from "./types";
+import { Result, Deck, setList, Card, CardCount, Rule, ArchetypeClassification } from "./types";
 import DeckDetailModal from "./DeckDetailModal";
 import InfoModal from "./InfoModal";
 
@@ -27,11 +27,24 @@ const App: React.FC = () => {
     const [filterForSpice, setFilterForSpice] = useState<boolean>(false);
     const [filterForFave, setFilterForFave] = useState<boolean>(false);
 
+    const [archetypeRules, setArchetypeRules] = useState<ArchetypeClassification[]>([]);
+
+    useEffect(() => {
+        const rulesFromStorage = window.localStorage?.getItem("archetypeRules");
+        if (rulesFromStorage && rulesFromStorage !== "undefined") {
+            setArchetypeRules(JSON.parse(rulesFromStorage));
+        }
+    }, []);
+
+    useEffect(() => {
+        window.localStorage?.setItem("archetypeRules", JSON.stringify(archetypeRules));
+    }, [archetypeRules]);
+
     // scraping
     const generateCardCounts = (results: Result[]) => {
         const counts: CardCount[] = [];
         results.forEach((r) => {
-            r.deck.maindeck.forEach((card) => {
+            r.deck.main.forEach((card) => {
                 const countRow = counts.find((c) => c.card.name === card.name);
                 if (!countRow) {
                     counts.push({
@@ -57,7 +70,7 @@ const App: React.FC = () => {
                     });
                 } else {
                     countRow.card.count += card.count;
-                    if (!r.deck.maindeck.find((c) => c.name === card.name)) {
+                    if (!r.deck.main.find((c) => c.name === card.name)) {
                         countRow.deckCount++;
                     }
                 }
@@ -80,12 +93,64 @@ const App: React.FC = () => {
         setCardCounts(counts);
     };
 
+    const deckFitsRule = (deck: Card[], rule: Rule) => {
+        const { cardName, atMost, atLeast } = rule;
+        return (
+            (atMost === 0 && !deck.some((c) => c.name === cardName)) ||
+            deck.some((c) => c.name === cardName && (!atLeast || c.count >= atLeast) && (!atMost || c.count <= atMost))
+        );
+    };
+
+    const identifyArchetype = (result: Result): Result => {
+        const { deck } = result;
+        for (const a of archetypeRules) {
+            const { name, rules } = a;
+            let isMatch = true;
+            rules.forEach((r) => {
+                if (isMatch) {
+                    //short circuit if a rule isn't fit
+                    let cardSet: Card[] = [];
+                    switch (r.in) {
+                        case "main":
+                            cardSet = deck.main;
+                            break;
+                        case "side":
+                            cardSet = deck.sideboard;
+                            break;
+                        case "both":
+                            const combinedCards = [...deck.main];
+                            deck.sideboard.forEach((card) => {
+                                const mb = combinedCards.find((c) => c.name === card.name);
+                                if (!mb) {
+                                    combinedCards.push(card);
+                                } else {
+                                    mb.count += card.count;
+                                }
+                            });
+                            cardSet = combinedCards;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    isMatch = deckFitsRule(cardSet, r);
+                }
+            });
+            if (isMatch) {
+                result.archetype = name;
+                break; //escape loop
+            }
+        }
+        return result;
+    };
+
     const scrape = async () => {
         try {
             if (!wotcUrl) return;
             const scrapedResults = await getDecksFromUrl(wotcUrl);
-            generateCardCounts(scrapedResults);
-            setResultList(scrapedResults);
+            const namedResults = scrapedResults.map((r) => identifyArchetype(r));
+            generateCardCounts(namedResults);
+            setResultList(namedResults);
             setHasScraped(true);
             setDeckModalOpen(true);
             setIsNumberedResults(wotcUrl.includes("champ") || wotcUrl.includes("challenge"));
@@ -117,7 +182,7 @@ const App: React.FC = () => {
         const muUrl = `[${archetype || "archetype"}](${url})`;
         const muPilot = `**${pilot.replace(/[_]/g, "\\_")}${duplicatePilot ? " (duplicate pilot, link points to other list)" : ""}**`;
 
-        const highlights = [...deck.maindeck.filter((c) => c.highlighted), ...deck.sideboard.filter((c) => c.highlighted)].map((c) => c.name);
+        const highlights = [...deck.main.filter((c) => c.highlighted), ...deck.sideboard.filter((c) => c.highlighted)].map((c) => c.name);
         const muHighlights = `(${Array.from(new Set(highlights.map((c) => `[[${c}]]`))).join(", ")})`;
         return `${isNumberedResults ? "1." : "*"} ${muUrl}: ${muPilot} ${highlights.length ? muHighlights : ""}`;
     };
@@ -141,7 +206,7 @@ const App: React.FC = () => {
 
     // filtering
     const deckHasCard = (deck: Deck, filterCards: string[]): boolean => {
-        const cards = [...deck.maindeck, ...deck.sideboard];
+        const cards = [...deck.main, ...deck.sideboard];
         if (cards.filter((c) => filterCards.includes(c.name)).length) {
             return true;
         }
@@ -149,7 +214,7 @@ const App: React.FC = () => {
     };
 
     const deckHasExpansion = (deck: Deck, filterExpansions: string[]): boolean => {
-        const cards = [...deck.maindeck, ...deck.sideboard];
+        const cards = [...deck.main, ...deck.sideboard];
         const nonBasics = cards.filter((c) => !["Plains", "Island", "Swamp", "Mountain", "Forest"].includes(c.name));
         const expansions = nonBasics.flatMap((c) => c.info?.printings || []);
         const deduped = [...new Set(expansions)];
@@ -187,8 +252,8 @@ const App: React.FC = () => {
 
     const previewText = textFormat === "markdown" ? generateMarkdown(filteredResults) : generatePlaintext(filteredResults);
 
-    const decksByCard: string = filteredCardCounts
-        .filter((c) => !["Plains", "Island", "Swamp", "Mountain", "Forest"].includes(c.card.name))
+    const decksByCard: string = cardCounts
+        .filter((c) => c.card.info?.printings[0] === setList[0].code)
         .map((c) => {
             const cardName = `* [[${c.card.name}]]`;
             const urls = resultList
@@ -233,7 +298,7 @@ const App: React.FC = () => {
             )
         },
         {
-            menuItem: "Decks by Card",
+            menuItem: `Decks with ${setList[0].code} Cards`,
             pane: (
                 <Tab.Pane key="ByCard">
                     <Form>

@@ -28,7 +28,7 @@ export const getDecksFromUrl = async (wotcUrl: string): Promise<Result[]> => {
                 const url = `${wotcUrl}#${name.replace(regex, "").replace(spaces, "_").toLowerCase()}${chaff ? "_" + chaff : ""}`;
 
                 const deck: Deck = {
-                    maindeck: [],
+                    main: [],
                     sideboard: []
                 };
                 $(dg)
@@ -37,7 +37,7 @@ export const getDecksFromUrl = async (wotcUrl: string): Promise<Result[]> => {
                     .each((index: number, row: cheerio.Element) => {
                         const name: string = $(row).find(".card-name").text().trim();
                         const info = cardInfo[name] || cardInfo[name.split("//")[0].trim()];
-                        deck.maindeck.push({
+                        deck.main.push({
                             name,
                             count: parseInt($(row).find(".card-count").text(), 10),
                             highlighted: false,
