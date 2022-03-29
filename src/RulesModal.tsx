@@ -28,6 +28,7 @@ const RulesModal: React.FC<RulesModalProps> = (props: RulesModalProps) => {
 
     const addArchetype = () => {
         setArchetypeRules([...archetypeRules, { id: archetypeRules.length + 1, name: "", rules: [] }]);
+        setActiveIndex(archetypeRules.length);
     };
 
     return (
