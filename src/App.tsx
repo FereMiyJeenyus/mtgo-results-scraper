@@ -1,21 +1,22 @@
 import React, { useState, useCallback, useEffect } from "react";
 import "semantic-ui-css/semantic.min.css";
-import { Header, Container, Grid, Input, Button, Form, Message, Tab, List, DropdownItemProps, Accordion, Icon } from "semantic-ui-react";
+import { Header, Container, Grid, Input, Button, Form, Message, Tab, List, DropdownItemProps, Accordion, Icon, Dimmer, Loader } from "semantic-ui-react";
 import "./App.css";
 import { getDecksFromUrl } from "./scraper";
-import { Result, Deck, setList, Card, CardCount, Rule, ArchetypeClassification } from "./types";
+import { Result, Deck, setList, Card, CardCount, Rule, Archetype, guildMap, shardMap } from "./types";
 import DeckDetailModal from "./DeckDetailModal";
 import InfoModal from "./InfoModal";
+import RulesModal from "./RulesModal";
 
 export type TextFormat = "plaintext" | "markdown";
 const thx = `Direct links courtesy of /u/FereMiyJeenyus and their [MTGO Results Scraper](https://feremiyjeenyus.github.io/mtgo-results-scraper/)`;
 
 const App: React.FC = () => {
     const [hasScraped, setHasScraped] = useState<boolean>(false);
-    const [wotcUrl, setWotcUrl] = useState<string>("");
+    const [wotcUrl, setWotcUrl] = useState<string>("https://magic.wizards.com/en/articles/archive/mtgo-standings/modern-preliminary-2022-03-25");
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [resultList, setResultList] = useState<Result[]>([]);
     const [selectedCards, setSelectedCards] = useState<string[]>([]);
-    const [cardOptions, setCardOptions] = useState<DropdownItemProps[]>();
     const [cardCounts, setCardCounts] = useState<CardCount[]>([]);
     const [selectedExpansions, setSelectedExpansions] = useState<string[]>([]);
     const [deckModalOpen, setDeckModalOpen] = useState<boolean>(false);
@@ -26,8 +27,10 @@ const App: React.FC = () => {
     const [textFormat, setTextFormat] = useState<TextFormat>("markdown");
     const [filterForSpice, setFilterForSpice] = useState<boolean>(false);
     const [filterForFave, setFilterForFave] = useState<boolean>(false);
+    const [rulesModalOpen, setRulesModalOpen] = useState<boolean>(false);
+    const [cardOptions, setCardOptions] = useState<DropdownItemProps[]>([]);
 
-    const [archetypeRules, setArchetypeRules] = useState<ArchetypeClassification[]>([]);
+    const [archetypeRules, setArchetypeRules] = useState<Archetype[]>([]);
 
     useEffect(() => {
         const rulesFromStorage = window.localStorage?.getItem("archetypeRules");
@@ -101,52 +104,92 @@ const App: React.FC = () => {
         );
     };
 
-    const identifyArchetype = (result: Result): Result => {
-        const { deck } = result;
-        for (const a of archetypeRules) {
-            const { name, rules } = a;
-            let isMatch = true;
-            rules.forEach((r) => {
-                if (isMatch) {
-                    //short circuit if a rule isn't fit
-                    let cardSet: Card[] = [];
-                    switch (r.in) {
-                        case "main":
-                            cardSet = deck.main;
-                            break;
-                        case "side":
-                            cardSet = deck.sideboard;
-                            break;
-                        case "both":
-                            const combinedCards = [...deck.main];
-                            deck.sideboard.forEach((card) => {
-                                const mb = combinedCards.find((c) => c.name === card.name);
-                                if (!mb) {
-                                    combinedCards.push(card);
-                                } else {
-                                    mb.count += card.count;
-                                }
-                            });
-                            cardSet = combinedCards;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    isMatch = deckFitsRule(cardSet, r);
+    const identifyArchetype = useCallback(
+        (result: Result): Result => {
+            const { deck } = result;
+            const combinedCards = [...deck.main];
+            deck.sideboard.forEach((card) => {
+                const mb = combinedCards.find((c) => c.name === card.name);
+                if (!mb) {
+                    combinedCards.push(card);
+                } else {
+                    mb.count += card.count;
                 }
             });
-            if (isMatch) {
-                result.archetype = name;
-                break; //escape loop
+            for (const a of archetypeRules) {
+                const { name, rules } = a;
+                let isMatch = true;
+                rules.forEach((r) => {
+                    if (isMatch) {
+                        //short circuit if a rule isn't fit
+                        let cardSet: Card[] = [];
+                        switch (r.in) {
+                            case "main":
+                                cardSet = deck.main;
+                                break;
+                            case "side":
+                                cardSet = deck.sideboard;
+                                break;
+                            case "both":
+                                cardSet = combinedCards;
+                                break;
+                            default:
+                                break;
+                        }
+
+                        isMatch = deckFitsRule(cardSet, r);
+                    }
+                });
+                if (isMatch) {
+                    if (a.prefixColors) {
+                        const colorCount = combinedCards.reduce(
+                            (colors, card) => {
+                                card.info?.colors.forEach((color) => {
+                                    colors[color] += card.count;
+                                });
+                                return colors;
+                            },
+                            { W: 0, U: 0, B: 0, R: 0, G: 0 }
+                        );
+                        const colorString = `${colorCount.U ? "U" : ""}${colorCount.B ? "B" : ""}${colorCount.G ? "G" : ""}${colorCount.R ? "R" : ""}${
+                            colorCount.W ? "W" : ""
+                        }`;
+                        let colorPrefix = "";
+                        const useGuildNames = false;
+                        const useShardNames = true;
+                        switch (colorString.length) {
+                            case 1:
+                                colorPrefix = `Mono-${colorString}`;
+                                break;
+                            case 2:
+                                colorPrefix = useGuildNames ? guildMap[colorString] : colorString;
+                                break;
+                            case 3:
+                                colorPrefix = useShardNames ? shardMap[colorString] : colorString;
+                                break;
+                            case 4:
+                                colorPrefix = "4c";
+                                break;
+                            case 5:
+                                colorPrefix = "5c";
+                                break;
+                        }
+                        result.archetype = `${colorPrefix} ${name}`;
+                    } else {
+                        result.archetype = name;
+                    }
+                    break; //escape loop
+                }
             }
-        }
-        return result;
-    };
+            return result;
+        },
+        [archetypeRules]
+    );
 
     const scrape = async () => {
         try {
             if (!wotcUrl) return;
+            setIsLoading(true);
             const scrapedResults = await getDecksFromUrl(wotcUrl);
             const namedResults = scrapedResults.map((r) => identifyArchetype(r));
             generateCardCounts(namedResults);
@@ -154,7 +197,7 @@ const App: React.FC = () => {
             setHasScraped(true);
             setDeckModalOpen(true);
             setIsNumberedResults(wotcUrl.includes("champ") || wotcUrl.includes("challenge"));
-
+            setIsLoading(false);
             if (scrapedResults.length) {
                 setDeckModalOpen(true);
             }
@@ -309,8 +352,21 @@ const App: React.FC = () => {
         }
     ];
 
+    const handleRulesModalClose = (refresh: boolean) => {
+        if (refresh) {
+            const namedResults = resultList.map((r) => identifyArchetype(r));
+            setResultList(namedResults);
+        }
+        setRulesModalOpen(false);
+    };
+
     return (
         <Container className="App">
+            {isLoading && (
+                <Dimmer active inverted>
+                    <Loader size="large">Loading</Loader>
+                </Dimmer>
+            )}
             <Header>MTGO Results Scraper</Header>
             <Grid columns={16}>
                 <Grid.Row>
@@ -332,6 +388,14 @@ const App: React.FC = () => {
                             </List.Item>
                             <List.Item>
                                 <Button onClick={() => setDeckModalOpen(true)} content="Decks" disabled={!hasScraped} />
+                            </List.Item>
+                            <List.Item>
+                                <Button
+                                    onClick={() => {
+                                        setRulesModalOpen(true);
+                                    }}
+                                    content="Archetype Definitions"
+                                />
                             </List.Item>
                             <List.Item>
                                 <Button onClick={() => setInfoModalOpen(true)} content="What's this?" />
@@ -360,6 +424,7 @@ const App: React.FC = () => {
                                     clearable
                                     search
                                     selection
+                                    lazyLoad
                                     value={selectedCards}
                                     options={cardOptions || []}
                                     onChange={(_e, { value }) => {
@@ -447,6 +512,7 @@ const App: React.FC = () => {
                 results={resultList}
                 setResults={setResultList}
             />
+            <RulesModal open={rulesModalOpen} onClose={handleRulesModalClose} archetypeRules={archetypeRules} setArchetypeRules={setArchetypeRules} />
             <InfoModal open={infoModalOpen} onClose={() => setInfoModalOpen(false)} />
         </Container>
     );

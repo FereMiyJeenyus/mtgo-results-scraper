@@ -69,8 +69,10 @@ export const setList = [
     { code: "WAR", name: "War of the Spark" }
 ];
 
-export interface ArchetypeClassification {
+export interface Archetype {
+    id: number;
     name: string;
+    prefixColors?: boolean;
     rules: Rule[];
 }
 
@@ -79,4 +81,30 @@ export interface Rule {
     in: "main" | "side" | "both";
     atLeast?: number;
     atMost?: number;
+}
+
+export enum guildMap {
+    UW = "Azorius",
+    UB = "Dimir",
+    UR = "Izzet",
+    UG = "Simic",
+    BW = "Orzhov",
+    BR = "Rakdos",
+    BG = "Golgari",
+    GR = "Gruul",
+    GW = "Selesnya",
+    RW = "Boros"
+}
+
+export enum shardMap {
+    UBR = "Grixis",
+    UBG = "Sultai",
+    UBW = "Esper",
+    URG = "Temur",
+    URW = "Jeskai",
+    UGW = "Bant",
+    BRG = "Jund",
+    BRW = "Mardu",
+    BGW = "Abzan",
+    RGW = "Naya"
 }

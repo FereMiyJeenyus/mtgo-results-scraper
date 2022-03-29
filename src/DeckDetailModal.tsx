@@ -65,7 +65,7 @@ const DeckDetailModal: React.FC<DeckDetailModalProps> = (props: DeckDetailModalP
     };
     const displayedDeck = results[displayedDeckIndex];
     return (
-        <Modal open={open} onClose={onClose} centered={false} closeOnDimmerClick={false} closeIcon>
+        <Modal open={open} onClose={onClose} style={{ top: "3em", left: "calc(50vw - 475px)" }} closeOnDimmerClick={false} closeIcon>
             <Modal.Content>
                 {!!displayedDeck && (
                     <Grid width={16}>
