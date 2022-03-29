@@ -13,7 +13,7 @@ const thx = `Direct links courtesy of /u/FereMiyJeenyus and their [MTGO Results 
 
 const App: React.FC = () => {
     const [hasScraped, setHasScraped] = useState<boolean>(false);
-    const [wotcUrl, setWotcUrl] = useState<string>("https://magic.wizards.com/en/articles/archive/mtgo-standings/modern-preliminary-2022-03-25");
+    const [wotcUrl, setWotcUrl] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [resultList, setResultList] = useState<Result[]>([]);
     const [selectedCards, setSelectedCards] = useState<string[]>([]);
