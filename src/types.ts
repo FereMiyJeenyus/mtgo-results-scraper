@@ -91,9 +91,9 @@ export enum guildMap {
     BW = "Orzhov",
     BR = "Rakdos",
     BG = "Golgari",
-    GR = "Gruul",
-    GW = "Selesnya",
-    RW = "Boros"
+    RG = "Gruul",
+    RW = "Boros",
+    GW = "Selesnya"
 }
 
 export enum shardMap {

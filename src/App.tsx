@@ -107,7 +107,8 @@ const App: React.FC = () => {
     const identifyArchetype = useCallback(
         (result: Result): Result => {
             const { deck } = result;
-            const combinedCards = [...deck.main];
+            //lazy clone the card objects because we add the sideboard counts
+            const combinedCards = deck.main.map((c) => ({ ...c }));
             deck.sideboard.forEach((card) => {
                 const mb = combinedCards.find((c) => c.name === card.name);
                 if (!mb) {
@@ -142,18 +143,20 @@ const App: React.FC = () => {
                 });
                 if (isMatch) {
                     if (a.prefixColors) {
-                        const colorCount = combinedCards.reduce(
-                            (colors, card) => {
+                        const colorPresence = combinedCards.reduce(
+                            (hasColor, card) => {
                                 card.info?.colors.forEach((color) => {
-                                    colors[color] += card.count;
+                                    if (!card.info?.manaCost?.includes("/")) {
+                                        hasColor[color] = true;
+                                    }
                                 });
-                                return colors;
+                                return hasColor;
                             },
-                            { W: 0, U: 0, B: 0, R: 0, G: 0 }
+                            { W: false, U: false, B: false, R: false, G: false }
                         );
-                        const colorString = `${colorCount.U ? "U" : ""}${colorCount.B ? "B" : ""}${colorCount.G ? "G" : ""}${colorCount.R ? "R" : ""}${
-                            colorCount.W ? "W" : ""
-                        }`;
+                        const colorString = `${colorPresence.U ? "U" : ""}${colorPresence.B ? "B" : ""}${colorPresence.R ? "R" : ""}${
+                            colorPresence.G ? "G" : ""
+                        }${colorPresence.W ? "W" : ""}`;
                         let colorPrefix = "";
                         const useGuildNames = false;
                         const useShardNames = true;
@@ -168,7 +171,7 @@ const App: React.FC = () => {
                                 colorPrefix = useShardNames ? shardMap[colorString] : colorString;
                                 break;
                             case 4:
-                                colorPrefix = "4c";
+                                colorPrefix = colorString;
                                 break;
                             case 5:
                                 colorPrefix = "5c";
@@ -398,7 +401,7 @@ const App: React.FC = () => {
                                 />
                             </List.Item>
                             <List.Item>
-                                <Button onClick={() => setInfoModalOpen(true)} content="What's this?" />
+                                <Button onClick={() => setInfoModalOpen(true)} content="What is this?" />
                             </List.Item>
                         </List>
                     </Grid.Column>
