@@ -52,6 +52,7 @@ export type Color = "W" | "U" | "B" | "R" | "G";
 export type CardType = "Creature" | "Land" | "Instant" | "Sorcery" | "Artifact" | "Enchantment" | "Planeswalker";
 
 export const setList = [
+    { code: "SNC", name: "Streets of New Capenna" },
     { code: "NEO", name: "Kamigawa: Neon Dynasty" },
     { code: "VOW", name: "Innistrad: Crimson Vow" },
     { code: "MID", name: "Innistrad: Midnight Hunt" },

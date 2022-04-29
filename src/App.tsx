@@ -199,7 +199,7 @@ const App: React.FC = () => {
             setResultList(namedResults);
             setHasScraped(true);
             setDeckModalOpen(true);
-            setIsNumberedResults(wotcUrl.includes("champ") || wotcUrl.includes("challenge"));
+            setIsNumberedResults(wotcUrl.includes("champ") || wotcUrl.includes("challenge") || wotcUrl.includes("qualifier"));
             setIsLoading(false);
             if (scrapedResults.length) {
                 setDeckModalOpen(true);
