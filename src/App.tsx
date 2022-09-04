@@ -299,7 +299,7 @@ const App: React.FC = () => {
     const previewText = textFormat === "markdown" ? generateMarkdown(filteredResults) : generatePlaintext(filteredResults);
 
     const decksByCard: string = cardCounts
-        .filter((c) => c.card.info?.printings[0] === setList[0].code)
+        .filter((c) => c.card.info?.printings[0] === setList[0].code && c.card.info?.printings.length === 1)
         .map((c) => {
             const cardName = `* [[${c.card.name}]]`;
             const urls = resultList
