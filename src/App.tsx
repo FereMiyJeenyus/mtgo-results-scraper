@@ -29,6 +29,7 @@ const App: React.FC = () => {
     const [filterForFave, setFilterForFave] = useState<boolean>(false);
     const [rulesModalOpen, setRulesModalOpen] = useState<boolean>(false);
     const [cardOptions, setCardOptions] = useState<DropdownItemProps[]>([]);
+    const [showReprints, setShowReprints] = useState<boolean>(true);
 
     const [archetypeRules, setArchetypeRules] = useState<Archetype[]>([]);
 
@@ -64,11 +65,7 @@ const App: React.FC = () => {
                 const countRow = counts.find((c) => c.card.name === card.name);
                 if (!countRow) {
                     counts.push({
-                        card: {
-                            name: card.name,
-                            count: card.count,
-                            highlighted: false
-                        },
+                        card: { ...card, highlighted: false },
                         deckCount: 1
                     });
                 } else {
@@ -261,7 +258,21 @@ const App: React.FC = () => {
 
     const deckHasExpansion = (deck: Deck, filterExpansions: string[]): boolean => {
         const cards = [...deck.main, ...deck.sideboard];
-        const nonBasics = cards.filter((c) => !["Plains", "Island", "Swamp", "Mountain", "Forest"].includes(c.name));
+        const nonBasics = cards.filter(
+            (c) =>
+                ![
+                    "Plains",
+                    "Island",
+                    "Swamp",
+                    "Mountain",
+                    "Forest",
+                    "Snow-Covered Plains",
+                    "Snow-Covered Island",
+                    "Snow-Covered Swamp",
+                    "Snow-Covered Mountain",
+                    "Snow-Covered Forest"
+                ].includes(c.name)
+        );
         const expansions = nonBasics.flatMap((c) => c.info?.printings || []);
         const deduped = [...new Set(expansions)];
 
@@ -299,7 +310,22 @@ const App: React.FC = () => {
     const previewText = textFormat === "markdown" ? generateMarkdown(filteredResults) : generatePlaintext(filteredResults);
 
     const decksByCard: string = cardCounts
-        .filter((c) => c.card.info?.printings[0] === setList[0].code && c.card.info?.printings.length === 1)
+        .filter(
+            (c) =>
+                ![
+                    "Plains",
+                    "Island",
+                    "Swamp",
+                    "Mountain",
+                    "Forest",
+                    "Snow-Covered Plains",
+                    "Snow-Covered Island",
+                    "Snow-Covered Swamp",
+                    "Snow-Covered Mountain",
+                    "Snow-Covered Forest"
+                ].includes(c.card.name)
+        )
+        .filter((c) => c.card.info?.printings.includes(setList[0].code) && (showReprints || c.card.info?.printings.length === 1))
         .map((c) => {
             const cardName = `* [[${c.card.name}]]`;
             const urls = resultList
@@ -348,6 +374,7 @@ const App: React.FC = () => {
             pane: (
                 <Tab.Pane key="ByCard">
                     <Form>
+                        <Form.Checkbox label="Show Reprints?" checked={!!showReprints} onChange={(e, { checked }) => setShowReprints(!!checked)} />
                         <Form.TextArea style={{ height: 500 }} value={decksByCard} />
                     </Form>
                 </Tab.Pane>
