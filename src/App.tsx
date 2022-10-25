@@ -400,14 +400,15 @@ const App: React.FC = () => {
             <Header>MTGO Results Scraper</Header>
             <Grid columns={16}>
                 <Grid.Row>
+                    <Message>
+                        Hello! If you&apos;re seeing this, the scraper isn&apos;t working with the mtgo.com changeover yet. I plan to have it sorted out in the
+                        next couple days, after which this message will disappear.
+                    </Message>
+                </Grid.Row>
+                <Grid.Row>
                     <Grid.Column width={3} textAlign="left">
                         <Input value={wotcUrl} onChange={(e) => setWotcUrl(e.target.value)} placeholder="Deck Dump URL" />
-                        <a
-                            href="https://magic.wizards.com/en/content/deck-lists-magic-online-products-game-info"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ marginLeft: "1em" }}
-                        >
+                        <a href="https://www.mtgo.com/en/mtgo/decklists" target="_blank" rel="noopener noreferrer" style={{ marginLeft: "1em" }}>
                             MTGO Results
                         </a>
                     </Grid.Column>

@@ -8,7 +8,7 @@ const spaces = / /g;
 
 export const getDecksFromUrl = async (wotcUrl: string): Promise<Result[]> => {
     const results: Result[] = [];
-    if (wotcUrl.startsWith("https://magic.wizards.com")) {
+    if (wotcUrl.startsWith("https://mtgo.com")) {
         try {
             const response = await fetch(`https://scraper-cors.herokuapp.com/${wotcUrl}`);
             const body = await response.text();
