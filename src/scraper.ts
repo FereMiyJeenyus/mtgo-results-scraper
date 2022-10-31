@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { Deck, Result } from "./types";
+import { Card, Deck, Result } from "./types";
 import cardInfo from "./resources/cardInfo.json";
 
 export const getDecksFromUrl = async (wotcUrl: string): Promise<Result[]> => {
@@ -12,24 +12,43 @@ export const getDecksFromUrl = async (wotcUrl: string): Promise<Result[]> => {
             if (match) {
                 const parsed = JSON.parse(match[0].split(" = ")[1].split(";")[0]);
                 console.log(parsed);
-                return parsed.decks.map((d, i) => {
-                    const parsedDeck = d.deck.find((x) => !x.SB).DECK_CARDS;
+                const results: Result[] = [];
+                parsed.decks.map((d, i) => {
+                    const parsedMain = d.deck.find((x) => !x.SB).DECK_CARDS;
                     const parsedSideboard = d.deck.find((x) => x.SB).DECK_CARDS;
+                    const main: Card[] = [];
+                    parsedMain.forEach((c) => {
+                        const existingCard = main.find((c2) => c2.name === c.CARD_ATTRIBUTES.NAME);
+                        if (existingCard) {
+                            existingCard.count += c.Quantity;
+                        } else {
+                            main.push({
+                                name: c.CARD_ATTRIBUTES.NAME,
+                                count: c.Quantity,
+                                highlighted: false,
+                                info: cardInfo[c.CARD_ATTRIBUTES.NAME]
+                            });
+                        }
+                    });
+                    const sideboard: Card[] = [];
+                    parsedSideboard.forEach((c) => {
+                        const existingCard = sideboard.find((c2) => c2.name === c.CARD_ATTRIBUTES.NAME);
+                        if (existingCard) {
+                            existingCard.count += c.Quantity;
+                        } else {
+                            sideboard.push({
+                                name: c.CARD_ATTRIBUTES.NAME,
+                                count: c.Quantity,
+                                highlighted: false,
+                                info: cardInfo[c.CARD_ATTRIBUTES.NAME]
+                            });
+                        }
+                    });
                     const deck: Deck = {
-                        main: parsedDeck.map((c) => ({
-                            name: c.CARD_ATTRIBUTES.NAME,
-                            count: c.Quantity,
-                            highlighted: false,
-                            info: cardInfo[c.CARD_ATTRIBUTES.NAME]
-                        })),
-                        sideboard: parsedSideboard.map((c) => ({
-                            name: c.CARD_ATTRIBUTES.NAME,
-                            count: c.Quantity,
-                            highlighted: false,
-                            info: cardInfo[c.CARD_ATTRIBUTES.NAME]
-                        }))
+                        main,
+                        sideboard
                     };
-                    return {
+                    results.push({
                         pilot: d.player,
                         url: `${wotcUrl}#deck_${d.player}`,
                         archetype: "",
@@ -37,9 +56,17 @@ export const getDecksFromUrl = async (wotcUrl: string): Promise<Result[]> => {
                         favorite: false,
                         spicy: false,
                         deck,
-                        duplicatePilot: false
-                    };
+                        duplicatePilot: !!results.find((r) => r.pilot === d.player)
+                    });
                 });
+                if (parsed.STANDINGS) {
+                    results.sort((a, b) => {
+                        const aStanding = parsed.STANDINGS.find((s) => s.NAME === a.pilot);
+                        const bStanding = parsed.STANDINGS.find((s) => s.NAME === b.pilot);
+                        return aStanding.RANK - bStanding.RANK;
+                    });
+                }
+                return results;
             }
         } catch (err) {
             console.log(err);
