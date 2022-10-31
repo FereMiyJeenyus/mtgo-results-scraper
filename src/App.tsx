@@ -401,6 +401,8 @@ const App: React.FC = () => {
                         The scraper should be functional, but there will likely be some bugs as the new MTGO team works out issues with their site and I try to
                         keep up. Please <a href="https://reddit.com/message/compose/?to=FereMiyJeenyus">message me on Reddit</a> if you notice anything, and I
                         will fix it as soon as possible.
+                        <br />
+                        KNOWN ISSUE: Challenges are shown ordered entirely by Swiss standings, instead of by top 8 results and Swiss for players 9-32.
                     </Message>
                 </Grid.Row>
                 <Grid.Row>
