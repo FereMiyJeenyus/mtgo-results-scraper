@@ -1,79 +1,50 @@
 import fetch from "node-fetch";
-import * as cheerio from "cheerio";
 import { Deck, Result } from "./types";
 import cardInfo from "./resources/cardInfo.json";
 
-const regex = /[^A-Za-z _-]/g;
-const spaces = / /g;
-
 export const getDecksFromUrl = async (wotcUrl: string): Promise<Result[]> => {
-    const results: Result[] = [];
-    if (wotcUrl.startsWith("https://mtgo.com")) {
+    if (wotcUrl.startsWith("https://www.mtgo.com")) {
         try {
             const response = await fetch(`https://scraper-cors.herokuapp.com/${wotcUrl}`);
             const body = await response.text();
-            const $ = cheerio.load(body);
-            const usernames: string[] = [];
-            $(".deck-group").each((index: number, dg: cheerio.Element) => {
-                const headerContent = $(dg).find("h4").text();
-                const username = headerContent.split(" (")[0];
-                const duplicatePilot = usernames.includes(username);
-                usernames.push(username);
-                const parts = headerContent.split(" (");
-                const name = parts[0];
-                let chaff = "";
-                if (parts[1]) {
-                    chaff = parts[1].replace(regex, "").replace(spaces, "_").toLowerCase();
-                }
-                const url = `${wotcUrl}#${name.replace(regex, "").replace(spaces, "_").toLowerCase()}${chaff ? "_" + chaff : ""}`;
-
-                const deck: Deck = {
-                    main: [],
-                    sideboard: []
-                };
-                $(dg)
-                    .find(".sorted-by-overview-container")
-                    .find(".row")
-                    .each((index: number, row: cheerio.Element) => {
-                        const name: string = $(row).find(".card-name").text().trim();
-                        const info = cardInfo[name] || cardInfo[name.split("//")[0].trim()];
-                        deck.main.push({
-                            name,
-                            count: parseInt($(row).find(".card-count").text(), 10),
+            const decklistLineRegex = new RegExp("window.MTGO.decklists.data = .*;");
+            const match = decklistLineRegex.exec(body);
+            if (match) {
+                const parsed = JSON.parse(match[0].split(" = ")[1].split(";")[0]);
+                console.log(parsed);
+                return parsed.decks.map((d, i) => {
+                    const parsedDeck = d.deck.find((x) => !x.SB).DECK_CARDS;
+                    const parsedSideboard = d.deck.find((x) => x.SB).DECK_CARDS;
+                    const deck: Deck = {
+                        main: parsedDeck.map((c) => ({
+                            name: c.CARD_ATTRIBUTES.NAME,
+                            count: c.Quantity,
                             highlighted: false,
-                            info
-                        });
-                    });
-
-                $(dg)
-                    .find(".sorted-by-sideboard-container")
-                    .find(".row")
-                    .each((index: number, row: cheerio.Element) => {
-                        const name = $(row).find(".card-name").text().trim();
-                        const info = cardInfo[name] || cardInfo[name.split("//")[0].trim()];
-                        deck.sideboard.push({
-                            name,
-                            count: parseInt($(row).find(".card-count").text(), 10),
+                            info: cardInfo[c.CARD_ATTRIBUTES.NAME]
+                        })),
+                        sideboard: parsedSideboard.map((c) => ({
+                            name: c.CARD_ATTRIBUTES.NAME,
+                            count: c.Quantity,
                             highlighted: false,
-                            info
-                        });
-                    });
-
-                results.push({
-                    pilot: username,
-                    url: url,
-                    deck: deck,
-                    duplicatePilot,
-                    archetype: "",
-                    favorite: false,
-                    spicy: false,
-                    index
+                            info: cardInfo[c.CARD_ATTRIBUTES.NAME]
+                        }))
+                    };
+                    return {
+                        pilot: d.player,
+                        url: `${wotcUrl}#deck_${d.player}`,
+                        archetype: "",
+                        index: i,
+                        favorite: false,
+                        spicy: false,
+                        deck,
+                        duplicatePilot: false
+                    };
                 });
-            });
+            }
         } catch (err) {
             console.log(err);
             throw err;
         }
     }
-    return results;
+    return [];
 };

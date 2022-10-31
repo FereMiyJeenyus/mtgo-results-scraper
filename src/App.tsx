@@ -198,9 +198,6 @@ const App: React.FC = () => {
             setDeckModalOpen(true);
             setIsNumberedResults(wotcUrl.includes("champ") || wotcUrl.includes("challenge") || wotcUrl.includes("qualifier"));
             setIsLoading(false);
-            if (scrapedResults.length) {
-                setDeckModalOpen(true);
-            }
         } catch (error) {
             setScrapeError(true);
         }
@@ -400,9 +397,10 @@ const App: React.FC = () => {
             <Header>MTGO Results Scraper</Header>
             <Grid columns={16}>
                 <Grid.Row>
-                    <Message>
-                        Hello! If you&apos;re seeing this, the scraper isn&apos;t working with the mtgo.com changeover yet. I plan to have it sorted out in the
-                        next couple days, after which this message will disappear.
+                    <Message success>
+                        The scraper should be functional, but there will likely be some bugs as the new MTGO team works out issues with their site and I try to
+                        keep up. Please <a href="https://reddit.com/message/compose/?to=FereMiyJeenyus">message me on Reddit</a> if you notice anything, and I
+                        will fix it as soon as possible.
                     </Message>
                 </Grid.Row>
                 <Grid.Row>
