@@ -1,6 +1,6 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import "semantic-ui-css/semantic.min.css";
-import { Grid, Input, Button, Modal, Checkbox, InputOnChangeData } from "semantic-ui-react";
+import { Button, Modal, List, Container } from "semantic-ui-react";
 import "./App.css";
 import { Result } from "./types";
 import DeckList from "./DeckList";
@@ -15,7 +15,6 @@ interface DeckDetailModalProps {
 const DeckDetailModal: React.FC<DeckDetailModalProps> = (props: DeckDetailModalProps) => {
     const { results, setResults, open, onClose } = props;
     const [displayedDeckIndex, setDisplayedDeckIndex] = useState<number>(0);
-    const resultCount = results.length;
 
     const goToNextDeck = () => {
         if (!displayedDeck) return;
@@ -53,68 +52,22 @@ const DeckDetailModal: React.FC<DeckDetailModalProps> = (props: DeckDetailModalP
         setResults(res);
     };
 
-    const handleSetArchetype = (e: ChangeEvent, data: InputOnChangeData) => {
-        const { value } = data;
-        updateDisplayedDeck({ ...results[displayedDeckIndex], archetype: value });
-    };
-
-    const handleKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === "Enter") {
-            goToNextDeck();
-        }
-    };
     const displayedDeck = results[displayedDeckIndex];
     return (
         <Modal open={open} onClose={onClose} style={{ top: "3em", left: "calc(50vw - 475px)" }} closeOnDimmerClick={false} closeIcon>
-            <Modal.Content>
-                {!!displayedDeck && (
-                    <Grid width={16}>
-                        <Grid.Row className="decklist-header" verticalAlign="middle">
-                            <Grid.Column width={4}>
-                                <h3 style={{ marginBottom: "0.25em" }}>{displayedDeck.pilot}</h3>
-                                <span>
-                                    Deck {displayedDeck.index + 1} of {resultCount}
-                                </span>
-                            </Grid.Column>
-                            <Grid.Column width={6}>
-                                <Input label="Archetype" value={displayedDeck.archetype} onChange={handleSetArchetype} onKeyPress={handleKeyPress} />
-                            </Grid.Column>
-                            <Grid.Column width={2}>
-                                <Checkbox
-                                    checked={displayedDeck.favorite}
-                                    label="Favorite?"
-                                    onChange={() =>
-                                        updateDisplayedDeck({
-                                            ...displayedDeck,
-                                            favorite: !displayedDeck.favorite
-                                        })
-                                    }
-                                />
-                                <Checkbox
-                                    checked={displayedDeck.spicy}
-                                    label="Spicy?"
-                                    onChange={() =>
-                                        updateDisplayedDeck({
-                                            ...displayedDeck,
-                                            spicy: !displayedDeck.spicy
-                                        })
-                                    }
-                                />
-                            </Grid.Column>
-                            <Grid.Column width={2}>
-                                <Button onClick={goToPreviousDeck} content="Previous" />
-                            </Grid.Column>
-                            <Grid.Column width={2}>
-                                <Button onClick={goToNextDeck} content="Next" />
-                            </Grid.Column>
-                        </Grid.Row>
-
-                        <Grid.Row>
-                            <DeckList result={displayedDeck} updateDeck={updateDisplayedDeck} />
-                        </Grid.Row>
-                    </Grid>
-                )}
-            </Modal.Content>
+            <Modal.Header>
+                <Container textAlign="right">
+                    <List horizontal>
+                        <List.Item>
+                            <Button onClick={goToPreviousDeck} content="Previous" />
+                        </List.Item>
+                        <List.Item>
+                            <Button onClick={goToNextDeck} content="Next" />
+                        </List.Item>
+                    </List>
+                </Container>
+            </Modal.Header>
+            <Modal.Content>{!!displayedDeck && <DeckList result={displayedDeck} updateDeck={updateDisplayedDeck} />}</Modal.Content>
         </Modal>
     );
 };

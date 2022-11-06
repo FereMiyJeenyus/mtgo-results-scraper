@@ -1,9 +1,8 @@
 import React from "react";
 import "semantic-ui-css/semantic.min.css";
 import { DropdownItemProps, Checkbox, Grid, Input, Button } from "semantic-ui-react";
-import "./App.css";
 import RuleForm from "./RuleForm";
-import { Archetype, Rule } from "./types";
+import { Archetype, Rule } from "../../types";
 
 interface ArchetypeViewProps {
     archetype: Archetype;

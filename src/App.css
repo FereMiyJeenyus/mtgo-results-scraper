@@ -51,3 +51,8 @@ body {
     border-radius: 4px;
     background-color: lightblue;
 }
+
+.decklist-header-unnamed {
+    border-radius: 4px;
+    background-color:darksalmon;
+}

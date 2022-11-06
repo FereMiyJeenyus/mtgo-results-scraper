@@ -1,3 +1,13 @@
+export interface ScrapeResult {
+    id: number;
+    mtgoUrl: string;
+    eventType: string;
+    eventDate: string;
+    deckResults: Result[];
+    cardCounts: CardCount[];
+    numbered: boolean;
+}
+
 export interface Deck {
     main: Card[];
     sideboard: Card[];
@@ -16,7 +26,7 @@ export interface Result {
     deck: Deck;
     duplicatePilot: boolean;
     archetype: string;
-    index: number;
+    id: number;
     favorite: boolean;
     spicy: boolean;
 }
@@ -71,6 +81,13 @@ export const setList = [
     { code: "WAR", name: "War of the Spark" }
 ];
 
+export type Format = "standard" | "pioneer" | "modern" | "legacy" | "vintage" | "pauper";
+
+export interface Metagame {
+    format: Format;
+    archetypes: Archetype[];
+}
+
 export interface Archetype {
     id: number;
     name: string;
@@ -110,3 +127,5 @@ export enum shardMap {
     BGW = "Abzan",
     RGW = "Naya"
 }
+
+export const thx = `Direct links courtesy of /u/FereMiyJeenyus and their [MTGO Results Scraper](https://feremiyjeenyus.github.io/mtgo-results-scraper/about). If you've appreciated this post, consider [supporting their cardboard addiction](https://ko-fi.com/feremiyjeenyus).`;
