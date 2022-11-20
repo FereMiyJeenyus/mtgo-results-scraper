@@ -9,7 +9,7 @@ const NavBar: React.FC = () => {
     return (
         <Menu size="large">
             <Container>
-                <Menu.Item as={Link} to={"mtgo-results-scraper"} active={path === "/mtgo-results-scraper/"} onClick={() => setPath("/mtgo-results-scraper/")}>
+                <Menu.Item as={Link} to={"mtgo-results-scraper"} active={path === "/mtgo-results-scraper"} onClick={() => setPath("/mtgo-results-scraper")}>
                     Home
                 </Menu.Item>
                 <Menu.Item

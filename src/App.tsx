@@ -24,7 +24,10 @@ const App: React.FC = () => {
                     <Route path="/mtgo-results-scraper/mass-entry">
                         <ScraperForm />
                     </Route>
-                    <Route path="/mtgo-results-scraper/">
+                    <Route path="/mtgo-results-scraper">
+                        <OldApp />
+                    </Route>
+                    <Route path="/">
                         <OldApp />
                     </Route>
                 </Switch>
