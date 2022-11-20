@@ -110,7 +110,7 @@ const DeckDetailModal: React.FC<DeckDetailModalProps> = (props: DeckDetailModalP
                         </Grid.Row>
 
                         <Grid.Row>
-                            <DeckList result={displayedDeck} updateDeck={updateDisplayedDeck} />
+                            <DeckList result={displayedDeck} updateDeck={updateDisplayedDeck} collapsible={true} />
                         </Grid.Row>
                     </Grid>
                 )}

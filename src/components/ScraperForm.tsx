@@ -8,9 +8,7 @@ import { clearResults, pushScrapeResult, selectScrapeResults } from "../scrapeRe
 import { useDispatch, useSelector } from "react-redux";
 
 const ScraperForm: React.FC = () => {
-    const [urls, setUrls] = useState<string>(`https://www.mtgo.com/en/mtgo/decklist/modern-preliminary-2022-11-0212491783;
-https://www.mtgo.com/en/mtgo/decklist/modern-preliminary-2022-11-0212491653;
-https://www.mtgo.com/en/mtgo/decklist/modern-preliminary-2022-11-0312491789`);
+    const [urls, setUrls] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const scrapeResults = useSelector(selectScrapeResults);
     const dispatch = useDispatch();

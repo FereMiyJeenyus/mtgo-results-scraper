@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import "semantic-ui-css/semantic.min.css";
 import { Header, Container, Grid, Input, Button, Form, Message, Tab, List, DropdownItemProps, Accordion, Icon, Dimmer, Loader } from "semantic-ui-react";
 import "./App.css";
-import { getDecksFromUrl } from "./lib";
+import { scrapeUrl } from "./lib";
 import { Result, Deck, setList, Card, CardCount, Rule, Archetype, guildMap, shardMap } from "./types";
 import DeckDetailModal from "./DeckDetailModal";
 
@@ -11,7 +11,7 @@ const thx = `Direct links courtesy of /u/FereMiyJeenyus and their [MTGO Results 
 
 const App: React.FC = () => {
     const [hasScraped, setHasScraped] = useState<boolean>(false);
-    const [wotcUrl, setWotcUrl] = useState<string>("https://www.mtgo.com/en/mtgo/decklist/modern-league-2022-11-01");
+    const [wotcUrl, setWotcUrl] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [resultList, setResultList] = useState<Result[]>([]);
     const [selectedCards, setSelectedCards] = useState<string[]>([]);
@@ -189,8 +189,9 @@ const App: React.FC = () => {
         try {
             if (!wotcUrl) return;
             setIsLoading(true);
-            const scrapedResults = await getDecksFromUrl(wotcUrl);
-            const namedResults = scrapedResults.map((r) => identifyArchetype(r));
+            const scrapeResults = await scrapeUrl(wotcUrl);
+            if (!scrapeResults) return;
+            const namedResults = scrapeResults.deckResults.map((r) => identifyArchetype(r));
             generateCardCounts(namedResults);
             setResultList(namedResults);
             setHasScraped(true);

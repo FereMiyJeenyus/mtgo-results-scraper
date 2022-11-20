@@ -67,7 +67,9 @@ const DeckDetailModal: React.FC<DeckDetailModalProps> = (props: DeckDetailModalP
                     </List>
                 </Container>
             </Modal.Header>
-            <Modal.Content>{!!displayedDeck && <DeckList result={displayedDeck} updateDeck={updateDisplayedDeck} />}</Modal.Content>
+            <Modal.Content>
+                {!!displayedDeck && <DeckList result={displayedDeck} updateDeck={updateDisplayedDeck} collapsible={false} goToNext={goToNextDeck} />}
+            </Modal.Content>
         </Modal>
     );
 };

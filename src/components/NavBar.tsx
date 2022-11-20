@@ -15,8 +15,8 @@ const NavBar: React.FC = () => {
                 <Menu.Item as={Link} to={"archetypes"} active={path === "/archetypes"} onClick={() => setPath("/archetypes")}>
                     Archetypes
                 </Menu.Item>
-                <Menu.Item as={Link} to={"decks"} active={path === "/decks"} onClick={() => setPath("/decks")}>
-                    Decks
+                <Menu.Item as={Link} to={"mass-entry"} active={path === "/mass-entry"} onClick={() => setPath("/mass-entry")}>
+                    Mass Entry
                 </Menu.Item>
                 <Menu.Item as={Link} to={"about"} active={path === "/about"} onClick={() => setPath("/about")}>
                     About

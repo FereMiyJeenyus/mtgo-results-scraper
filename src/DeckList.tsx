@@ -8,7 +8,9 @@ import CardItem from "./CardItem";
 
 interface DeckListProps {
     result: Result;
+    collapsible?: boolean;
     updateDeck(result: Result): void;
+    goToNext?(): void;
 }
 
 const colorLabels = ["White", "Blue", "Black", "Red", "Green", "Colorless"];
@@ -20,7 +22,7 @@ const colorColors = ["#fff8d6", "#367ae0", "#404040", "#db2e2e", "#187d2a", "#cf
 const typeColors = ["#8ba349", "#c48dc2", "#ffb114"];
 
 const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
-    const { result, updateDeck } = props;
+    const { result, updateDeck, goToNext, collapsible = true } = props;
     const [colorCount, setColorCount] = useState<number[]>([]);
     const [typeCount, setTypeCount] = useState<number[]>([]);
     const [collapsed, setCollapsed] = useState<boolean>(true);
@@ -76,6 +78,12 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
         updateDeck({ ...result, archetype: value });
     };
 
+    const handleKeyPress = (event) => {
+        if (event.key === "Enter" && !!goToNext) {
+            goToNext();
+        }
+    };
+
     const main: { [key: string]: React.ReactElement[] } = {
         Planeswalkers: [],
         Creatures: [],
@@ -123,7 +131,7 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
         if (!card.info) {
             side.Unknown.push(<CardItem key={card.name} card={card} toggleCardHighlight={toggleCardHighlight} />);
         } else if (card.info.types.includes("Creature")) {
-            if (card.info.text && card.info.text.includes("Companion —")) {
+            if (card.info.companion) {
                 side.Companion.push(<CardItem key={card.name} card={card} toggleCardHighlight={toggleCardHighlight} />);
             } else {
                 side.Creatures.push(<CardItem key={card.name} card={card} toggleCardHighlight={toggleCardHighlight} />);
@@ -148,7 +156,7 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
             <Grid.Row className={result.archetype ? "decklist-header" : "decklist-header-unnamed"} verticalAlign="middle">
                 <Grid.Column width={6} onClick={() => setCollapsed(!collapsed)}>
                     <Header style={{ marginBottom: 0 }}>
-                        <Icon name={collapsed ? "triangle right" : "triangle down"} />
+                        {collapsible && <Icon name={collapsed ? "triangle right" : "triangle down"} />}
                         {result.archetype ? `${result.archetype} | ` : ""}
                         {result.pilot}
                     </Header>
@@ -162,12 +170,12 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
                             <Icon name="hotjar" size="big" color={result.spicy ? "orange" : "grey"} className="clickable" onClick={toggleSpicy} />
                         </List.Item>
                         <List.Item>
-                            <Input label="Archetype" value={result.archetype} onChange={handleSetArchetype} />
+                            <Input label="Archetype" value={result.archetype} onChange={handleSetArchetype} onKeyPress={handleKeyPress} />
                         </List.Item>
                     </List>
                 </Grid.Column>
             </Grid.Row>
-            {!collapsed && (
+            {(!collapsible || !collapsed) && (
                 <Grid.Row>
                     <Grid.Column width={4}>
                         <Header content="Main" style={{ marginBottom: 0 }} />
