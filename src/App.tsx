@@ -15,16 +15,16 @@ const App: React.FC = () => {
             <NavBar />
             <Container>
                 <Switch>
-                    <Route path="/archetypes">
+                    <Route path="/mtgo-results-scraper/archetypes">
                         <Archetypes />
                     </Route>
-                    <Route path="/about">
+                    <Route path="/mtgo-results-scraper/about">
                         <About />
                     </Route>
-                    <Route path="/mass-entry">
+                    <Route path="/mtgo-results-scraper/mass-entry">
                         <ScraperForm />
                     </Route>
-                    <Route path="/">
+                    <Route path="/mtgo-results-scraper/">
                         <OldApp />
                     </Route>
                 </Switch>
