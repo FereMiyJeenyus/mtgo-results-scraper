@@ -123,29 +123,6 @@ const ArchetypePage: React.FC = () => {
                     )}
                 </Droppable>
             </DragDropContext>
-            {/* <Accordion>
-                {archetypeRules.map((archetype, i) => {
-                    return (
-                        <>
-                            <Accordion.Title
-                                key={`${archetype.id}-title`}
-                                active={activeIndex === i}
-                                index={i}
-                                onClick={() => {
-                                    setActiveIndex(activeIndex !== i ? i : -1);
-                                }}
-                            >
-                                <Icon name="dropdown" />
-                                <span>{archetype.name}</span>
-                                <div className="accordion-title-line" />
-                            </Accordion.Title>
-                            <Accordion.Content key={`${archetype.id}-content`} active={activeIndex === i}>
-                                <ArchetypeView archetype={archetype} updateArchetype={updateArchetype} cardOptions={cardOptions} />
-                            </Accordion.Content>
-                        </>
-                    );
-                })}
-            </Accordion> */}
             <Button icon="plus" content="Create New Archetype Definition" floated="left" onClick={() => addArchetype()} />
             <Button color="blue" content="Save and Apply" />
             <EditArchetypeModal open={editModalOpen} onClose={onEditModalClose} archetype={selectedArchetype} updateArchetype={updateArchetype} />
