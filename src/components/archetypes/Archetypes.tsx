@@ -26,7 +26,7 @@ const ArchetypePage: React.FC = () => {
     const [selectedFormat, setSelectedFormat] = useState<string>("");
     const [selectedArchetype, setSelectedArchetype] = useState<Archetype>();
     const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
-    const [oldArchetypeModalOpen, setOldArchtypeModalOpen] = useState<boolean>(false);
+    const [oldArchetypeModalOpen, setOldArchetypeModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
         const rulesFromStorage = window.localStorage?.getItem("archetypeRules");
@@ -99,7 +99,7 @@ const ArchetypePage: React.FC = () => {
                         <Ref innerRef={provided.innerRef}>
                             <List divided verticalAlign="middle" {...provided.droppableProps}>
                                 {archetypeRules.map((item, index) => (
-                                    <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
+                                    <Draggable key={item.id} draggableId={item.id?.toString()} index={index}>
                                         {(provided) => (
                                             <Ref innerRef={provided.innerRef}>
                                                 <List.Item {...provided.draggableProps} {...provided.dragHandleProps}>
@@ -126,7 +126,7 @@ const ArchetypePage: React.FC = () => {
             <Button icon="plus" content="Create New Archetype Definition" floated="left" onClick={() => addArchetype()} />
             <Button color="blue" content="Save and Apply" />
             <EditArchetypeModal open={editModalOpen} onClose={onEditModalClose} archetype={selectedArchetype} updateArchetype={updateArchetype} />
-            <Modal open={oldArchetypeModalOpen} onClose={() => setOldArchtypeModalOpen(false)}></Modal>
+            <Modal open={oldArchetypeModalOpen} onClose={() => setOldArchetypeModalOpen(false)}></Modal>
         </Container>
     );
 };

@@ -167,7 +167,7 @@ const App: React.FC = () => {
                                 colorPrefix = useShardNames ? shardMap[colorString] : colorString;
                                 break;
                             case 4:
-                                colorPrefix = colorString;
+                                colorPrefix = "4c";
                                 break;
                             case 5:
                                 colorPrefix = "5c";
@@ -394,7 +394,8 @@ const App: React.FC = () => {
                         keep up. Please <a href="https://reddit.com/message/compose/?to=FereMiyJeenyus">message me on Reddit</a> if you notice anything, and I
                         will fix it as soon as possible.
                         <br />
-                        KNOWN ISSUE: Challenges are shown ordered entirely by Swiss standings, instead of by top 8 results and Swiss for players 9-32.
+                        KNOWN ISSUE: Challenges are shown ordered entirely by Swiss standings, instead of by top 8 results and Swiss for players 9-32. This is
+                        fixed in the scraper, so no more manual reordering.
                     </Message>
                 </Grid.Row>
                 <Grid.Row>

@@ -74,7 +74,7 @@ export const identifyArchetype = (result: Result, archetypeRules: Archetype[]): 
                         colorPrefix = useShardNames ? shardMap[colorString] : colorString;
                         break;
                     case 4:
-                        colorPrefix = colorString;
+                        colorPrefix = "4c";
                         break;
                     case 5:
                         colorPrefix = "5c";
@@ -137,8 +137,8 @@ export const scrapeUrl = async (url: string): Promise<ScrapeResult | undefined> 
             console.log(parsed);
             const results: Result[] = [];
             parsed.decks.map((d, i) => {
-                const parsedMain = d.deck.find((x) => !x.SB).DECK_CARDS;
-                const parsedSideboard = d.deck.find((x) => x.SB).DECK_CARDS;
+                const parsedMain = d.deck.find((x) => !x.SB)?.DECK_CARDS || [];
+                const parsedSideboard = d.deck.find((x) => x.SB)?.DECK_CARDS || [];
                 const main: Card[] = [];
                 parsedMain.forEach((c) => {
                     if (aetherRegex.test(c.CARD_ATTRIBUTES.NAME)) c.CARD_ATTRIBUTES.NAME = c.CARD_ATTRIBUTES.NAME.replace(aetherRegex, "Aether");
@@ -184,7 +184,24 @@ export const scrapeUrl = async (url: string): Promise<ScrapeResult | undefined> 
                 });
             });
             if (parsed.STANDINGS) {
+                const topEightScore = {};
+                if (parsed.Brackets) {
+                    const matchResults = parsed.Brackets.flatMap((b) => b.matches).flatMap((m) => m.players);
+                    console.log(matchResults);
+                    matchResults.forEach((r) => {
+                        const { player, Winner } = r;
+                        if (topEightScore[player]) {
+                            topEightScore[player] += Winner ? 2 : 1;
+                        } else {
+                            topEightScore[player] = Winner ? 2 : 1;
+                        }
+                    });
+                    console.log(topEightScore);
+                }
                 results.sort((a, b) => {
+                    if (topEightScore[a.pilot] && topEightScore[b.pilot] && topEightScore[a.pilot] !== topEightScore[b.pilot]) {
+                        return topEightScore[b.pilot] - topEightScore[a.pilot];
+                    }
                     const aStanding = parsed.STANDINGS.find((s) => s.NAME === a.pilot);
                     const bStanding = parsed.STANDINGS.find((s) => s.NAME === b.pilot);
                     return aStanding.RANK - bStanding.RANK;

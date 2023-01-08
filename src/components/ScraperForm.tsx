@@ -16,13 +16,13 @@ const ScraperForm: React.FC = () => {
     const scrapeUrls = async () => {
         dispatch(clearResults());
         const splitUrls = urls.split(";").map((s) => s.trim());
+        setIsLoading(true);
         for (let index = 0; index < splitUrls.length; index++) {
             const url = splitUrls[index];
             try {
-                if (!url?.startsWith("https://www.mtgo.com")) return;
-                setIsLoading(true);
+                if (!url?.startsWith("https://www.mtgo.com")) throw new Error(`non mtgo url ${url}`);
                 const scrape = await scrapeUrl(url);
-                if (!scrape) return;
+                if (!scrape) throw new Error(`no scraped results returned for ${url}`);
 
                 const rulesFromStorage = window.localStorage?.getItem("archetypeRules");
                 let archetypeRules: Archetype[] = [];
@@ -54,7 +54,8 @@ const ScraperForm: React.FC = () => {
                         keep up. Please <a href="https://reddit.com/message/compose/?to=FereMiyJeenyus">message me on Reddit</a> if you notice anything, and I
                         will fix it as soon as possible.
                         <br />
-                        KNOWN ISSUE: Challenges are shown ordered entirely by Swiss standings, instead of by top 8 results and Swiss for players 9-32.
+                        KNOWN ISSUE: Challenges are shown ordered entirely by Swiss standings, instead of by top 8 results and Swiss for players 9-32. This is
+                        fixed in the scraper, so you shouldn&apos;t need to do any manual reordering.
                     </Message>
                 </Grid.Row>
                 <Grid.Row>

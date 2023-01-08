@@ -9,31 +9,16 @@ const NavBar: React.FC = () => {
     return (
         <Menu size="large">
             <Container>
-                <Menu.Item as={Link} to={"/mtgo-results-scraper"} active={path === "/mtgo-results-scraper"} onClick={() => setPath("/mtgo-results-scraper")}>
+                <Menu.Item as={Link} to={"/"} active={path === "/"} onClick={() => setPath("/")}>
                     Home
                 </Menu.Item>
-                <Menu.Item
-                    as={Link}
-                    to={"/mtgo-results-scraper/archetypes"}
-                    active={path === "/mtgo-results-scraper/archetypes"}
-                    onClick={() => setPath("/mtgo-results-scraper/archetypes")}
-                >
+                <Menu.Item as={Link} to={"/archetypes"} active={path === "/archetypes"} onClick={() => setPath("/archetypes")}>
                     Archetypes
                 </Menu.Item>
-                <Menu.Item
-                    as={Link}
-                    to={"/mtgo-results-scraper/mass-entry"}
-                    active={path === "/mtgo-results-scraper/mass-entry"}
-                    onClick={() => setPath("/mtgo-results-scraper/mass-entry")}
-                >
+                <Menu.Item as={Link} to={"/mass-entry"} active={path === "/mass-entry"} onClick={() => setPath("/mass-entry")}>
                     Mass Entry
                 </Menu.Item>
-                <Menu.Item
-                    as={Link}
-                    to={"/mtgo-results-scraper/about"}
-                    active={path === "/mtgo-results-scraper/about"}
-                    onClick={() => setPath("/mtgo-results-scraper/about")}
-                >
+                <Menu.Item as={Link} to={"/about"} active={path === "/about"} onClick={() => setPath("/about")}>
                     About
                 </Menu.Item>
             </Container>

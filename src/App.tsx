@@ -11,21 +11,18 @@ import ScraperForm from "./components/ScraperForm";
 
 const App: React.FC = () => {
     return (
-        <Router>
+        <Router basename={"/mtgo-results-scraper/"}>
             <NavBar />
             <Container>
                 <Switch>
-                    <Route path="/mtgo-results-scraper/archetypes">
+                    <Route path="/archetypes">
                         <Archetypes />
                     </Route>
-                    <Route path="/mtgo-results-scraper/about">
+                    <Route path="/about">
                         <About />
                     </Route>
-                    <Route path="/mtgo-results-scraper/mass-entry">
+                    <Route path="/mass-entry">
                         <ScraperForm />
-                    </Route>
-                    <Route path="/mtgo-results-scraper">
-                        <OldApp />
                     </Route>
                     <Route path="/">
                         <OldApp />

@@ -2,7 +2,7 @@
   "name": "mtgo-results-scraper",
   "version": "0.2.2",
   "private": true,
-  "homepage": "https://feremiyjeenyus.github.com.io/mtgo-results-scraper",
+  "homepage": "https://feremiyjeenyus.github.com.io/mtgo-results-scraper/",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.0",
     "@types/react-beautiful-dnd": "^13.1.2",
