@@ -91,9 +91,10 @@ const App: React.FC = () => {
 
     const deckFitsRule = (deck: Card[], rule: Rule) => {
         const { cardName, atMost, atLeast } = rule;
+        if (atMost === 0) console.log(deck.some((c) => c.name === cardName && (!atLeast || c.count >= atLeast) && (!atMost || c.count <= atMost)));
         return (
             (atMost === 0 && !deck.some((c) => c.name === cardName)) ||
-            deck.some((c) => c.name === cardName && (!atLeast || c.count >= atLeast) && (!atMost || c.count <= atMost))
+            deck.some((c) => c.name === cardName && (!atLeast || c.count >= atLeast) && (!(atMost === 0) || c.count <= atMost))
         );
     };
 

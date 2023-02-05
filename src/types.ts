@@ -62,6 +62,7 @@ export type Color = "W" | "U" | "B" | "R" | "G";
 export type CardType = "Creature" | "Land" | "Instant" | "Sorcery" | "Artifact" | "Enchantment" | "Planeswalker";
 
 export const setList = [
+    { code: "ONE", name: "Phyrexia: All Will Be One" },
     { code: "BRO", name: "The Brothers' War" },
     { code: "DMU", name: "Dominaria United" },
     { code: "SNC", name: "Streets of New Capenna" },
