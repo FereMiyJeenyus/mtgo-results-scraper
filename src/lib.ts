@@ -2,6 +2,8 @@ import fetch from "node-fetch";
 import { Archetype, Card, CardCount, Deck, guildMap, Result, ScrapeResult, shardMap } from "./types";
 import cardInfo from "./resources/cardInfo.json";
 
+const ignoreColorCards = ["Leyline of Sanctity", "Leyline of the Void", "Orvar, the All-Form"];
+
 export const identifyArchetype = (result: Result, archetypeRules: Archetype[]): Result => {
     const { deck } = result;
     //lazy clone the card objects because we add the sideboard counts
@@ -46,7 +48,7 @@ export const identifyArchetype = (result: Result, archetypeRules: Archetype[]): 
                 const colorPresence = combinedCards.reduce(
                     (hasColor, card) => {
                         card.info?.colors.forEach((color) => {
-                            if (!card.info?.manaCost?.includes("/")) {
+                            if (!ignoreColorCards.includes(card.name) && !card.info?.manaCost?.includes("/")) {
                                 hasColor[color] = true;
                             }
                         });

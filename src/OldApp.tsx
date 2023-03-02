@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import "semantic-ui-css/semantic.min.css";
 import { Header, Container, Grid, Input, Button, Form, Message, Tab, List, DropdownItemProps, Accordion, Icon, Dimmer, Loader } from "semantic-ui-react";
 import "./App.css";
-import { scrapeUrl } from "./lib";
+import { identifyArchetype, scrapeUrl } from "./lib";
 import { Result, Deck, setList, Card, CardCount, Rule, Archetype, guildMap, shardMap } from "./types";
 import DeckDetailModal from "./DeckDetailModal";
 
@@ -26,19 +26,6 @@ const App: React.FC = () => {
     const [filterForFave, setFilterForFave] = useState<boolean>(false);
     const [cardOptions, setCardOptions] = useState<DropdownItemProps[]>([]);
     const [showReprints, setShowReprints] = useState<boolean>(true);
-
-    const [archetypeRules, setArchetypeRules] = useState<Archetype[]>([]);
-
-    useEffect(() => {
-        const rulesFromStorage = window.localStorage?.getItem("archetypeRules");
-        if (rulesFromStorage && rulesFromStorage !== "undefined") {
-            setArchetypeRules(JSON.parse(rulesFromStorage));
-        }
-    }, []);
-
-    useEffect(() => {
-        window.localStorage?.setItem("archetypeRules", JSON.stringify(archetypeRules));
-    }, [archetypeRules]);
 
     // scraping
     const generateCardCounts = (results: Result[]) => {
@@ -89,110 +76,18 @@ const App: React.FC = () => {
         setCardCounts(counts);
     };
 
-    const deckFitsRule = (deck: Card[], rule: Rule) => {
-        const { cardName, atMost, atLeast } = rule;
-        if (atMost === 0) console.log(deck.some((c) => c.name === cardName && (!atLeast || c.count >= atLeast) && (!atMost || c.count <= atMost)));
-        return (
-            (atMost === 0 && !deck.some((c) => c.name === cardName)) ||
-            deck.some((c) => c.name === cardName && (!atLeast || c.count >= atLeast) && (!(atMost === 0) || c.count <= atMost))
-        );
-    };
-
-    const identifyArchetype = useCallback(
-        (result: Result): Result => {
-            const { deck } = result;
-            //lazy clone the card objects because we add the sideboard counts
-            const combinedCards = deck.main.map((c) => ({ ...c }));
-            deck.sideboard.forEach((card) => {
-                const mb = combinedCards.find((c) => c.name === card.name);
-                if (!mb) {
-                    combinedCards.push(card);
-                } else {
-                    mb.count += card.count;
-                }
-            });
-            for (const a of archetypeRules) {
-                const { name, rules } = a;
-                let isMatch = true;
-                rules.forEach((r) => {
-                    if (isMatch) {
-                        //short circuit if a rule isn't fit
-                        let cardSet: Card[] = [];
-                        switch (r.in) {
-                            case "main":
-                                cardSet = deck.main;
-                                break;
-                            case "side":
-                                cardSet = deck.sideboard;
-                                break;
-                            case "both":
-                                cardSet = combinedCards;
-                                break;
-                            default:
-                                break;
-                        }
-
-                        isMatch = deckFitsRule(cardSet, r);
-                    }
-                });
-                if (isMatch) {
-                    if (a.prefixColors) {
-                        const colorPresence = combinedCards.reduce(
-                            (hasColor, card) => {
-                                card.info?.colors.forEach((color) => {
-                                    if (!card.info?.manaCost?.includes("/")) {
-                                        hasColor[color] = true;
-                                    }
-                                });
-                                return hasColor;
-                            },
-                            { W: false, U: false, B: false, R: false, G: false }
-                        );
-                        const colorString = `${colorPresence.U ? "U" : ""}${colorPresence.B ? "B" : ""}${colorPresence.R ? "R" : ""}${
-                            colorPresence.G ? "G" : ""
-                        }${colorPresence.W ? "W" : ""}`;
-                        let colorPrefix = "";
-                        const useGuildNames = false;
-                        const useShardNames = true;
-                        switch (colorString.length) {
-                            case 0:
-                                colorPrefix = `Colorless`;
-                                break;
-                            case 1:
-                                colorPrefix = `Mono-${colorString}`;
-                                break;
-                            case 2:
-                                colorPrefix = useGuildNames ? guildMap[colorString] : colorString;
-                                break;
-                            case 3:
-                                colorPrefix = useShardNames ? shardMap[colorString] : colorString;
-                                break;
-                            case 4:
-                                colorPrefix = "4c";
-                                break;
-                            case 5:
-                                colorPrefix = "5c";
-                                break;
-                        }
-                        result.archetype = `${colorPrefix} ${name}`;
-                    } else {
-                        result.archetype = name;
-                    }
-                    break; //escape loop
-                }
-            }
-            return result;
-        },
-        [archetypeRules]
-    );
-
     const scrape = async () => {
         try {
             if (!wotcUrl) return;
             setIsLoading(true);
             const scrapeResults = await scrapeUrl(wotcUrl);
             if (!scrapeResults) return;
-            const namedResults = scrapeResults.deckResults.map((r) => identifyArchetype(r));
+            const rulesFromStorage = window.localStorage?.getItem("archetypeRules");
+            let archetypeRules: Archetype[] = [];
+            if (rulesFromStorage && rulesFromStorage !== "undefined") {
+                archetypeRules = JSON.parse(rulesFromStorage);
+            }
+            const namedResults = scrapeResults.deckResults.map((r) => identifyArchetype(r, archetypeRules));
             generateCardCounts(namedResults);
             setResultList(namedResults);
             setHasScraped(true);
