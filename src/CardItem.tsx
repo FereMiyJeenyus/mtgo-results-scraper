@@ -14,9 +14,9 @@ const CardItem: React.FC<CardItemProps> = (props: CardItemProps) => {
         <List.Item key={card.name} onClick={() => toggleCardHighlight(card)} className={card.highlighted ? "highlight" : ""}>
             <Popup
                 basic
-                mouseEnterDelay={700}
-                mouseLeaveDelay={500}
-                position="top center"
+                mouseEnterDelay={600}
+                mouseLeaveDelay={400}
+                position="top right"
                 trigger={
                     <p>
                         {card.count} {card.name}
@@ -24,7 +24,12 @@ const CardItem: React.FC<CardItemProps> = (props: CardItemProps) => {
                 }
             >
                 <Popup.Content>
-                    {card.info && <Image src={`https://api.scryfall.com/cards/named?format=image&exact=${card.name.replaceAll(" ", "+")}`} />}
+                    {card.info && (
+                        <Image
+                            className={card.info.types.includes("Battle") ? "rotate90" : ""}
+                            src={`https://api.scryfall.com/cards/named?format=image&exact=${card.name.replaceAll(" ", "+")}`}
+                        />
+                    )}
                 </Popup.Content>
             </Popup>
         </List.Item>

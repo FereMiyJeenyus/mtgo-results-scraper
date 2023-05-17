@@ -91,6 +91,7 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
         Sorceries: [],
         Artifacts: [],
         Enchantments: [],
+        Battles: [],
         Lands: [],
         Unknown: []
     };
@@ -112,6 +113,8 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
             main.Enchantments.push(<CardItem key={card.name} card={card} toggleCardHighlight={toggleCardHighlight} />);
         } else if (card.info.types.includes("Planeswalker")) {
             main.Planeswalkers.push(<CardItem key={card.name} card={card} toggleCardHighlight={toggleCardHighlight} />);
+        } else if (card.info.types.includes("Battle")) {
+            main.Battles.push(<CardItem key={card.name} card={card} toggleCardHighlight={toggleCardHighlight} />);
         }
     });
 
@@ -123,6 +126,7 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
         Sorceries: [],
         Artifacts: [],
         Enchantments: [],
+        Battles: [],
         Lands: [],
         Unknown: []
     };
@@ -148,6 +152,8 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
             side.Enchantments.push(<CardItem key={card.name} card={card} toggleCardHighlight={toggleCardHighlight} />);
         } else if (card.info.types.includes("Planeswalker")) {
             side.Planeswalkers.push(<CardItem key={card.name} card={card} toggleCardHighlight={toggleCardHighlight} />);
+        } else if (card.info.types.includes("Battle")) {
+            main.Battles.push(<CardItem key={card.name} card={card} toggleCardHighlight={toggleCardHighlight} />);
         }
     });
 
@@ -205,8 +211,7 @@ const DeckList: React.FC<DeckListProps> = (props: DeckListProps) => {
                                             <List.List key={key}>
                                                 <List.Header>
                                                     {key === "Companion" && <Icon name="paw" />}
-                                                    {key}
-                                                    {key === "Companion" && <Icon name="paw" />}
+                                                    {key} {key === "Companion" && <Icon name="paw" />}
                                                 </List.Header>
                                                 {side[key]}
                                             </List.List>

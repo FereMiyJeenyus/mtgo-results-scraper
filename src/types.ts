@@ -59,7 +59,7 @@ export interface CardCount {
 }
 
 export type Color = "W" | "U" | "B" | "R" | "G";
-export type CardType = "Creature" | "Land" | "Instant" | "Sorcery" | "Artifact" | "Enchantment" | "Planeswalker";
+export type CardType = "Creature" | "Land" | "Instant" | "Sorcery" | "Artifact" | "Enchantment" | "Planeswalker" | "Battle";
 
 export const setList = [
     { code: "MOM", name: "March of the Machine" },
