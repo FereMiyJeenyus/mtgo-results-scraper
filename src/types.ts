@@ -62,6 +62,7 @@ export type Color = "W" | "U" | "B" | "R" | "G";
 export type CardType = "Creature" | "Land" | "Instant" | "Sorcery" | "Artifact" | "Enchantment" | "Planeswalker" | "Battle";
 
 export const setList = [
+    { code: "LTR", name: "Lord of the Rings" },
     { code: "MOM", name: "March of the Machine" },
     { code: "ONE", name: "Phyrexia: All Will Be One" },
     { code: "BRO", name: "The Brothers' War" },
