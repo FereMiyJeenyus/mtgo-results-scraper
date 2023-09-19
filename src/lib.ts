@@ -132,7 +132,8 @@ export const scrapeUrl = async (url: string): Promise<ScrapeResult | undefined> 
         const response = await fetch(`https://scraper-cors.herokuapp.com/${url}`);
         const body = await response.text();
         const decklistLineRegex = new RegExp("window.MTGO.decklists.data = .*;");
-        const aetherRegex = new RegExp("Ã[^ ]*r");
+        const aetherRegex = new RegExp("^Ã[^ ]*r");
+        const lorienRegex = new RegExp("^LÃ[^]rien");
         const match = decklistLineRegex.exec(body);
         if (match) {
             const parsed = JSON.parse(match[0].split(" = ")[1].split(";")[0]);
@@ -144,6 +145,7 @@ export const scrapeUrl = async (url: string): Promise<ScrapeResult | undefined> 
                 const main: Card[] = [];
                 parsedMain.forEach((c) => {
                     if (aetherRegex.test(c.CARD_ATTRIBUTES.NAME)) c.CARD_ATTRIBUTES.NAME = c.CARD_ATTRIBUTES.NAME.replace(aetherRegex, "Aether");
+                    if (lorienRegex.test(c.CARD_ATTRIBUTES.NAME)) c.CARD_ATTRIBUTES.NAME = c.CARD_ATTRIBUTES.NAME.replace(lorienRegex, "Lórien");
                     const existingCard = main.find((c2) => c2.name === c.CARD_ATTRIBUTES.NAME);
                     if (existingCard) {
                         existingCard.count += c.Quantity;
