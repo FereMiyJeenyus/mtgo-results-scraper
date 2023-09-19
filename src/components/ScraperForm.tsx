@@ -49,16 +49,6 @@ const ScraperForm: React.FC = () => {
             <Header>MTGO Results Scraper</Header>
             <Grid columns={16}>
                 <Grid.Row>
-                    <Message success>
-                        The scraper should be functional, but there will likely be some bugs as the new MTGO team works out issues with their site and I try to
-                        keep up. Please <a href="https://reddit.com/message/compose/?to=FereMiyJeenyus">message me on Reddit</a> if you notice anything, and I
-                        will fix it as soon as possible.
-                        <br />
-                        KNOWN ISSUE: Challenges are shown ordered entirely by Swiss standings, instead of by top 8 results and Swiss for players 9-32. This is
-                        fixed in the scraper, so you shouldn&apos;t need to do any manual reordering.
-                    </Message>
-                </Grid.Row>
-                <Grid.Row>
                     <Grid.Column width={8} textAlign="left">
                         <Form>
                             <TextArea value={urls} onInput={(e, data) => setUrls(data.value as string)} placeholder="Deck Dump URLs, separated by semicolons" />
